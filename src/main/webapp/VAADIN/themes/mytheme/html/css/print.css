@@ -1,0 +1,55 @@
+@media print
+{
+    /*.title-container
+    {
+        width: 360px;
+        float: left;
+    }
+
+    .details-container
+    {
+        width: 300px;
+        float: right;
+    }*/
+    .col-lg-6
+    {
+    	width: 50%;
+    }
+}
+#rr-form
+{
+	border: 1px solid #dee2e6;
+	padding: 10px;
+}
+
+.rrlabel
+{
+	width: 70px;
+}
+
+.rrInput
+{
+	border: none; 
+    width: 100%;
+}
+
+#table-list>tbody
+{
+	font-family: "Times New Roman"!important;
+	font-size: 10px;
+}
+
+#rrFields
+{
+	margin-bottom: 20px;
+}
+
+#ClientForm
+{
+	/*border: 1px solid black;*/
+}
+
+.PartsContainer
+{
+	border: 1px solid black;
+}

@@ -1,0 +1,76 @@
+@media print
+{
+    /*.title-container
+    {
+        width: 360px;
+        float: left;
+    }
+
+    .details-container
+    {
+        width: 300px;
+        float: right;
+    }*/
+}
+@page {
+    size: auto;   /* auto is the initial value */
+    margin: 0;  /* this affects the margin in the printer settings */
+}
+/*#rr-form
+{
+	border: 1px solid #dee2e6;
+	padding: 10px;
+}*/
+
+.rrlabel
+{
+	width: 70px;
+    font-weight: bolder;
+}
+
+.rrInput
+{
+	border: none; 
+	width: 100%;
+}
+
+#table-list>tbody
+{
+	font-family: "Times New Roman"!important;
+	font-size: 10px;
+}
+
+#rrFields
+{
+	margin-bottom: 20px;
+}
+
+#ClientForm
+{
+	/*border: 1px solid black;*/
+}
+
+.PartsContainer
+{
+	border: 1px solid black;
+}
+
+.PartsContainer:hover
+{
+	border: 2px solid grey;
+}
+
+.close
+{
+	display: none;
+}
+
+.col-lg-6
+{
+	/*width: 47.35%;*/
+    width: 48.55%;
+}
+#main-container
+{
+    margin-top: 50px;
+}
