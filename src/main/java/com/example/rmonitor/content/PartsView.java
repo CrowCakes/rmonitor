@@ -38,6 +38,7 @@ import com.example.rmonitor.classes.Parts;
 import com.example.rmonitor.content.PartsForm;
 import com.example.rmonitor.content.PartsView;
 import com.vaadin.navigator.View;
+import com.vaadin.server.FileResource;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -48,8 +49,15 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.joda.time.DateTime;
+import org.vaadin.viritin.button.DownloadButton;
 
 /*
  * Exception performing whole class analysis.
@@ -139,7 +147,20 @@ implements View {
             
         });
         
-        row.addComponents(new Component[]{this.filter, ViewParts, addPart});
+        DownloadButton report = new DownloadButton(out -> {
+        	this.manager.connect();
+        	String response = manager.send("ReportParts");
+        	this.manager.disconnect();
+        	
+        	try {
+        		out.write(response.getBytes());
+        	}
+        	catch (IOException ex) {
+        		
+        	}
+        }).withCaption("Generate Inventory Report");
+        
+        row.addComponents(new Component[]{this.filter, ViewParts, addPart, report});
         return row;
     }
 
