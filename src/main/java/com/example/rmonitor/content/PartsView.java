@@ -46,12 +46,17 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,17 +153,27 @@ implements View {
         });
         
         DownloadButton report = new DownloadButton(out -> {
+        	//Notification.show("Status", "Generating the report...", Notification.Type.TRAY_NOTIFICATION);
+        	
         	this.manager.connect();
         	String response = manager.send("ReportParts");
         	this.manager.disconnect();
         	
         	try {
         		out.write(response.getBytes());
+        		//Path path = FileSystems.getDefault().getPath(response);
+        		//Files.copy(path, out);
         	}
         	catch (IOException ex) {
         		
         	}
-        }).withCaption("Generate Inventory Report");
+        })
+        .setFileNameProvider(() -> {
+        	return String.format("Inventory of Parts - %s.csv", new Date(DateTime.now().getMillis()));
+        })
+        .withCaption("Generate Inventory Report");
+        
+        report.setEnabled(false);
         
         row.addComponents(new Component[]{this.filter, ViewParts, addPart, report});
         return row;
