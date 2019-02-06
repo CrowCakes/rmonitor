@@ -207,9 +207,10 @@ public class HTMLGenerator {
 		manager.connect();
 		List<Accessory> bar = constructor.fetchDeliveryAccessories(manager, d.getDeliveryID());
 		manager.disconnect();
-
+		
+		html.append("<div class=\"column\">");
 		//for every 4 accessories make a cell
-		for (int y = 0; y<bar.size(); y+=4) {
+		for (int y = 0; y<bar.size(); y+=8) {
 			html.append("<div class=\"container\">");
 			
 			//fill each cell with 4 accessories
@@ -226,13 +227,45 @@ public class HTMLGenerator {
 			
 			html.append("</div>");
 		}
+		html.append("</div>");
+		
+		html.append("<div class=\"column\">");
+		//for every 4 accessories make a cell
+		for (int y = 4; y<bar.size(); y+=8) {
+			html.append("<div class=\"container\">");
+			
+			//fill each cell with 4 accessories
+			for (int x = 0; x < 4; x+=1) {
+				if (y+x < bar.size()) {
+					html.append("<span class=\"rentalNumber\"><strong>" + 
+							bar.get(y+x).getRentalNumber() + 
+							"</strong>" +
+							" " +
+							bar.get(y+x).getName() +
+							"</span><br><br>");
+				}
+			}
+			
+			html.append("</div>");
+		}
+		html.append("</div>");
+		
+		html.append("				</div>\r\n");
+		
+		/*
+		 * This part makes the table for the Delivery's Accessories
+		 * */
+		html.append("<h3 style=\"text-align:center\">Miscellaneous</h3>\r\n" + 
+				"			<div id=\"partsList\"\r\n" + 
+				"				<div id=\"itemList\" class=\"row\">");
 		
 		manager.connect();
 		List<SmallAccessory> foobar = constructor.fetchDeliveryPeripherals(manager, d.getDeliveryID());
 		manager.disconnect();
 		
 		//for every 4 accessories make a cell
-		for (int y = 0; y<foobar.size(); y+=4) {
+		html.append("<div class=\"column\">");
+		for (int y = 0; y<foobar.size(); y+=8) {
 			html.append("<div class=\"container\">");
 
 			//fill each cell with 4 accessories
@@ -249,6 +282,27 @@ public class HTMLGenerator {
 
 			html.append("</div>");
 		}
+		html.append("</div>");
+		
+		html.append("<div class=\"column\">");
+		for (int y = 4; y<foobar.size(); y+=8) {
+			html.append("<div class=\"container\">");
+
+			//fill each cell with 4 accessories
+			for (int x = 0; x < 4; x+=1) {
+				if (y+x < foobar.size()) {
+					html.append("<span class=\"rentalNumber\"><strong>" + 
+							foobar.get(y+x).getName() + 
+							"</strong>" +
+							" x " +
+							foobar.get(y+x).getQuantity() +
+							"</span><br><br>");
+				}
+			}
+
+			html.append("</div>");
+		}
+		html.append("</div>");
 		
 		html.append("</div></div>");
 		
@@ -455,7 +509,8 @@ public class HTMLGenerator {
 		List<Accessory> bar = prepared_acc;
 
 		//for every 4 accessories make a cell
-		for (int y = 0; y<bar.size(); y+=4) {
+		html.append("<div class=\"column\">");
+		for (int y = 0; y<bar.size(); y+=8) {
 			html.append("<div class=\"container\">");
 			
 			//fill each cell with 4 accessories
@@ -472,11 +527,42 @@ public class HTMLGenerator {
 			
 			html.append("</div>");
 		}
+		html.append("</div>");
+		
+		html.append("<div class=\"column\">");
+		for (int y = 4; y<bar.size(); y+=8) {
+			html.append("<div class=\"container\">");
+			
+			//fill each cell with 4 accessories
+			for (int x = 0; x < 4; x+=1) {
+				if (y+x < bar.size()) {
+					html.append("<span class=\"rentalNumber\"><strong>" + 
+							bar.get(y+x).getRentalNumber() + 
+							"</strong>" +
+							" " +
+							bar.get(y+x).getName() +
+							"</span><br><br>");
+				}
+			}
+			
+			html.append("</div>");
+		}
+		html.append("</div>");
+		
+		html.append("				</div>\r\n");
+		
+		/*
+		 * This part makes the table for the Delivery's Accessories
+		 * */
+		html.append("<h3 style=\"text-align:center\">Miscellaneous</h3>\r\n" + 
+				"			<div id=\"partsList\"\r\n" + 
+				"				<div id=\"itemList\" class=\"row\">");
 		
 		List<SmallAccessory> foobar = prepared_per;
 		
 		//for every 4 accessories make a cell
-		for (int y = 0; y<foobar.size(); y+=4) {
+		html.append("<div class=\"column\">");
+		for (int y = 0; y<foobar.size(); y+=8) {
 			html.append("<div class=\"container\">");
 
 			//fill each cell with 4 accessories
@@ -493,6 +579,27 @@ public class HTMLGenerator {
 
 			html.append("</div>");
 		}
+		html.append("</div>");
+		
+		html.append("<div class=\"column\">");
+		for (int y = 4; y<foobar.size(); y+=8) {
+			html.append("<div class=\"container\">");
+
+			//fill each cell with 4 accessories
+			for (int x = 0; x < 4; x+=1) {
+				if (y+x < foobar.size()) {
+					html.append("<span class=\"rentalNumber\"><strong>" + 
+							foobar.get(y+x).getName() + 
+							"</strong>" +
+							" x " +
+							foobar.get(y+x).getQuantity() +
+							"</span><br><br>");
+				}
+			}
+
+			html.append("</div>");
+		}
+		html.append("</div>");
 		
 		html.append("</div></div>");
 		
