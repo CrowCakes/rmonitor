@@ -43,11 +43,21 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.joda.time.DateTime;
+import org.vaadin.viritin.button.DownloadButton;
 
 public class AccessoriesView
 extends CssLayout
@@ -133,7 +143,30 @@ implements View {
         quit.addClickListener(e -> {
             
         });
-        row.addComponents(new Component[]{this.filter, ViewAccessories, addAcc});
+        
+        DownloadButton report = new DownloadButton(out -> {
+        	
+        	this.manager.connect();
+        	String response = manager.send("ReportAccessories");
+        	this.manager.disconnect();
+        	
+        	try {
+        		out.write(response.getBytes());
+        		//Path path = FileSystems.getDefault().getPath(response);
+        		//Files.copy(path, out);
+        	}
+        	catch (IOException ex) {
+        		
+        	}
+        })
+        .setFileNameProvider(() -> {
+        	return String.format("Inventory of Accessories - %s.csv", new Date(DateTime.now().getMillis()));
+        })
+        .withCaption("Generate Inventory Report");
+        
+        report.setEnabled(false);
+        
+        row.addComponents(new Component[]{this.filter, ViewAccessories, addAcc, report});
         return row;
     }
 

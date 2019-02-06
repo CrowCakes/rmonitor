@@ -11,10 +11,25 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.joda.time.DateTime;
+import org.vaadin.viritin.button.DownloadButton;
 
 public class SmallAccView
 extends CssLayout
@@ -56,7 +71,50 @@ implements View {
             addSmallAcc.setEnabled(false);
         }
         
-        row.addComponents(new Component[]{this.filter, ViewSmallAccessories, addSmallAcc});
+        DownloadButton report = new DownloadButton(out -> {
+        	this.manager.connect();
+        	String response = manager.send("ReportSmallAccessories");
+        	this.manager.disconnect();
+        	
+        	FileInputStream file = null;
+        	
+        	try {
+        		//out.write(response.getBytes());
+        		
+        		file = new FileInputStream(response);
+        		int c;
+                while ((c = file.read()) != -1) {
+                   out.write(c);
+                }
+        		
+        		//Path path = FileSystems.getDefault().getPath(response);
+        		//Files.copy(path, out);
+        	}
+        	catch (IOException ex) {
+        		System.out.println("Error writing");
+        	}
+        	catch (InvalidPathException ex) {
+        		System.out.println("Error opening file path");
+        	}
+        	finally {
+        		if (file != null) {
+                    try {
+						file.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+                 }
+        	}
+        })
+        .setFileNameProvider(() -> {
+        	return String.format("Inventory of Bulk Accessories - %s.csv", new Date(DateTime.now().getMillis()));
+        })
+        .withCaption("Generate Inventory Report");
+        
+        report.setEnabled(false);
+        
+        row.addComponents(new Component[]{this.filter, ViewSmallAccessories, addSmallAcc, report});
         return row;
     }
 
