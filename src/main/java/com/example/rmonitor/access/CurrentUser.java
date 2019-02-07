@@ -1,20 +1,8 @@
-/*
- * Decompiled with CFR 0.139.
- * 
- * Could not load the following classes:
- *  com.example.rmonitor.access.CurrentUser
- *  com.vaadin.server.VaadinRequest
- *  com.vaadin.server.VaadinService
- *  com.vaadin.server.WrappedSession
- */
 package com.example.rmonitor.access;
 
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 
-/*
- * Exception performing whole class analysis ignored.
- */
 public final class CurrentUser {
     public static final String CURRENT_USER_SESSION_ATTRIBUTE_KEY = CurrentUser.class.getCanonicalName();
     public static final String CURRENT_USER_SESSION_ATTRIBUTE_KEY_INT = String.valueOf(CurrentUser.class.getCanonicalName()) + "Int";

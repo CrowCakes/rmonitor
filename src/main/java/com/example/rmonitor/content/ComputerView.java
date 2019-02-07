@@ -3,6 +3,7 @@ package com.example.rmonitor.content;
 import com.example.rmonitor.classes.Computer;
 import com.example.rmonitor.classes.ConnectionManager;
 import com.example.rmonitor.classes.ObjectConstructor;
+import com.example.rmonitor.classes.OnDemandFileDownloader;
 import com.example.rmonitor.content.ComputerForm;
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ValueChangeMode;
@@ -16,7 +17,9 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -92,6 +95,49 @@ implements View {
             addComputer.setEnabled(false);
         }
         
+        Button report = new Button("Generate Inventory Report");
+        report.addClickListener(e -> {
+        	Notification.show("Notice", "Please wait while the report is generated", Notification.Type.TRAY_NOTIFICATION);
+        });
+        
+        OnDemandFileDownloader.OnDemandStreamResource resource = new  OnDemandFileDownloader.OnDemandStreamResource()
+        {
+            @Override
+            public String getFilename()
+            {
+            	return String.format("Inventory of Rental Units - %s.csv", new Date(DateTime.now().getMillis()));
+            }
+
+            @Override
+            public InputStream getStream()
+            {
+            	manager.connect();
+            	String response = manager.send("ReportComputers").trim();
+            	manager.disconnect();
+            	
+            	System.out.println("getStream: " + response);
+            	
+            	byte[] source = null;
+            	
+            	Path path = FileSystems.getDefault().getPath(response);
+            	try {
+            		source = Files.readAllBytes(path);
+                	return new ByteArrayInputStream(source);
+            	}
+            	catch (IOException ex) {
+            		System.out.println("Failed");
+            		ex.printStackTrace();
+            		return null;
+            	}
+            	
+            }
+         };
+         
+         OnDemandFileDownloader downloader = new OnDemandFileDownloader(
+        	        resource);
+         downloader.extend(report);
+        
+        /*
         DownloadButton report = new DownloadButton(out -> {
         	
         	this.manager.connect();
@@ -112,7 +158,7 @@ implements View {
         })
         .withCaption("Generate Inventory Report");
         
-        report.setEnabled(false);
+        report.setEnabled(false);*/
         
         button_row.addComponents(new Component[]{this.filter, ViewComputers, addComputer, report});
         return button_row;

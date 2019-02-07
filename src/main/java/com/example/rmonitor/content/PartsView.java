@@ -34,6 +34,7 @@ package com.example.rmonitor.content;
 
 import com.example.rmonitor.classes.ConnectionManager;
 import com.example.rmonitor.classes.ObjectConstructor;
+import com.example.rmonitor.classes.OnDemandFileDownloader;
 import com.example.rmonitor.classes.Parts;
 import com.example.rmonitor.content.PartsForm;
 import com.example.rmonitor.content.PartsView;
@@ -51,6 +52,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -152,6 +154,49 @@ implements View {
             
         });
         
+        Button report = new Button("Generate Inventory Report");
+        report.addClickListener(e -> {
+        	Notification.show("Notice", "Please wait while the report is generated", Notification.Type.TRAY_NOTIFICATION);
+        });
+        
+        OnDemandFileDownloader.OnDemandStreamResource resource = new  OnDemandFileDownloader.OnDemandStreamResource()
+        {
+            @Override
+            public String getFilename()
+            {
+            	return String.format("Inventory of Parts - %s.csv", new Date(DateTime.now().getMillis()));
+            }
+
+            @Override
+            public InputStream getStream()
+            {
+            	manager.connect();
+            	String response = manager.send("ReportParts").trim();
+            	manager.disconnect();
+            	
+            	System.out.println("getStream: " + response);
+            	
+            	byte[] source = null;
+            	
+            	Path path = FileSystems.getDefault().getPath(response);
+            	try {
+            		source = Files.readAllBytes(path);
+                	return new ByteArrayInputStream(source);
+            	}
+            	catch (IOException ex) {
+            		System.out.println("Failed");
+            		ex.printStackTrace();
+            		return null;
+            	}
+            	
+            }
+         };
+         
+         OnDemandFileDownloader downloader = new OnDemandFileDownloader(
+        	        resource);
+         downloader.extend(report);
+        
+        /*
         DownloadButton report = new DownloadButton(out -> {
         	//Notification.show("Status", "Generating the report...", Notification.Type.TRAY_NOTIFICATION);
         	
@@ -173,7 +218,7 @@ implements View {
         })
         .withCaption("Generate Inventory Report");
         
-        report.setEnabled(false);
+        report.setEnabled(false);*/
         
         row.addComponents(new Component[]{this.filter, ViewParts, addPart, report});
         return row;

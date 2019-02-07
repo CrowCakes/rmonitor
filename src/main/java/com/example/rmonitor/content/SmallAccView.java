@@ -1,7 +1,11 @@
 package com.example.rmonitor.content;
 
+import com.example.rmonitor.classes.AdvancedFileDownloader;
+import com.example.rmonitor.classes.AdvancedFileDownloader.AdvancedDownloaderListener;
+import com.example.rmonitor.classes.AdvancedFileDownloader.DownloaderEvent;
 import com.example.rmonitor.classes.ConnectionManager;
 import com.example.rmonitor.classes.ObjectConstructor;
+import com.example.rmonitor.classes.OnDemandFileDownloader;
 import com.example.rmonitor.classes.SmallAccessory;
 import com.example.rmonitor.content.SmallAccessoryForm;
 import com.vaadin.navigator.View;
@@ -15,6 +19,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -71,6 +76,82 @@ implements View {
             addSmallAcc.setEnabled(false);
         }
         
+        
+        Button report = new Button("Generate Inventory Report");
+        report.addClickListener(e -> {
+        	Notification.show("Notice", "Please wait while the report is generated", Notification.Type.TRAY_NOTIFICATION);
+        });
+        
+        OnDemandFileDownloader.OnDemandStreamResource resource = new  OnDemandFileDownloader.OnDemandStreamResource()
+        {
+            @Override
+            public String getFilename()
+            {
+            	return String.format("Inventory of Bulk Accessories - %s.csv", new Date(DateTime.now().getMillis()));
+            }
+
+            @Override
+            public InputStream getStream()
+            {
+            	manager.connect();
+            	String response = manager.send("ReportSmallAccessories").trim();
+            	manager.disconnect();
+            	
+            	System.out.println("getStream: " + response);
+            	
+            	byte[] source = null;
+            	
+            	Path path = FileSystems.getDefault().getPath(response);
+            	try {
+            		source = Files.readAllBytes(path);
+                	return new ByteArrayInputStream(source);
+            	}
+            	catch (IOException ex) {
+            		System.out.println("Failed");
+            		ex.printStackTrace();
+            		return null;
+            	}
+            	
+            }
+         };
+         
+         OnDemandFileDownloader downloader = new OnDemandFileDownloader(
+        	        resource);
+         downloader.extend(report);
+        
+        /*
+        final AdvancedFileDownloader downloader = new AdvancedFileDownloader();
+        downloader.addAdvancedDownloaderListener(new AdvancedDownloaderListener() {*/
+
+                    /*
+                     * This method will be invoked just before the download
+                     * starts. Thus, a new file path can be set.
+                     * 
+                     * @param downloadEvent
+                     **/
+        /*
+                    @Override
+                    public void beforeDownload(DownloaderEvent downloadEvent) {
+                    	manager.connect();
+                    	String response = manager.send("ReportSmallAccessories");
+                    	manager.disconnect();
+
+                        String filePath = response;
+                        System.out.println("Received file path " + filePath);
+
+                        downloader.setFilePath(filePath);
+
+                        System.out.println("Starting downlad by button "
+                                + filePath.substring(filePath.lastIndexOf("/")));
+                    }
+
+                });
+        
+        
+        downloader.extend(report);*/
+        
+        
+        /*
         DownloadButton report = new DownloadButton(out -> {
         	this.manager.connect();
         	String response = manager.send("ReportSmallAccessories");
@@ -111,8 +192,9 @@ implements View {
         	return String.format("Inventory of Bulk Accessories - %s.csv", new Date(DateTime.now().getMillis()));
         })
         .withCaption("Generate Inventory Report");
+        */
+        //report.setEnabled(false);
         
-        report.setEnabled(false);
         
         row.addComponents(new Component[]{this.filter, ViewSmallAccessories, addSmallAcc, report});
         return row;

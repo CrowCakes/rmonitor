@@ -27,6 +27,8 @@ import com.vaadin.ui.UI;
 @Theme("mytheme")
 public class MyUI extends UI {
 	private AccessControl accessControl = new ServerAccessControl();
+	private String userID = "";
+	private String userName = "";
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -37,7 +39,7 @@ public class MyUI extends UI {
             public void detach(DetachEvent event) {
     			ConnectionManager manager = new ConnectionManager();
     			manager.connect();
-            	manager.send(String.format("quit%s%s", CurrentUser.getId(), CurrentUser.getName()));
+            	manager.send(String.format("quit%s%s", userID, userName));
             	manager.disconnect();
                 VaadinSession.getCurrent().getSession().invalidate();
     		}
@@ -56,11 +58,15 @@ public class MyUI extends UI {
                 @Override
                 //let the user in if login was successful
                 public void loginSuccessful() {
+                	userID = CurrentUser.getId();
+                	userName = CurrentUser.getName();
                     getMainPage();
                 }
             }));
         } else {
         	//already logged in
+        	userID = CurrentUser.getId();
+        	userName = CurrentUser.getName();
             getMainPage();
         }
     }
