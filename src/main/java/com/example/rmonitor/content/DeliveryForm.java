@@ -65,8 +65,8 @@ extends DeliveryFormLayout {
         layout.setWidthUndefined();
         Panel panel = new Panel();
         panel.setContent((Component)layout);
-        panel.setHeight("700px");
-        panel.setWidth("1075px");
+        panel.setHeight("650px");
+        panel.setWidth("1500px");
         this.addComponents(new Component[]{panel});
     }
 
@@ -599,6 +599,7 @@ extends DeliveryFormLayout {
 
     /***
      * Sends the field inputs to the database. A new entry is created, or an existing one is modified based on the field inputs.
+     * This function already checks for duplicate Computers, Accessories, and SmallAccessories.
      */
     private void save() {
         this.manager.connect();

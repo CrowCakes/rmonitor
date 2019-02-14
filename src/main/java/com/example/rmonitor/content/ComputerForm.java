@@ -1,49 +1,3 @@
-/*
- * Decompiled with CFR 0.139.
- * 
- * Could not load the following classes:
- *  com.example.rmonitor.classes.Computer
- *  com.example.rmonitor.classes.ConnectionManager
- *  com.example.rmonitor.classes.Delivery
- *  com.example.rmonitor.classes.ObjectConstructor
- *  com.example.rmonitor.classes.Parts
- *  com.example.rmonitor.content.ComputerForm
- *  com.example.rmonitor.content.ComputerForm$1
- *  com.example.rmonitor.content.ComputerForm$2
- *  com.example.rmonitor.content.ComputerView
- *  com.example.rmonitor.layouts.ComputerFormLayout
- *  com.example.rmonitor.layouts.ComputerLayout
- *  com.vaadin.data.Binder
- *  com.vaadin.data.Binder$Binding
- *  com.vaadin.data.HasValue
- *  com.vaadin.data.HasValue$ValueChangeEvent
- *  com.vaadin.data.HasValue$ValueChangeListener
- *  com.vaadin.data.ValueProvider
- *  com.vaadin.server.Setter
- *  com.vaadin.shared.Registration
- *  com.vaadin.shared.ui.ValueChangeMode
- *  com.vaadin.ui.Alignment
- *  com.vaadin.ui.Button
- *  com.vaadin.ui.Button$ClickEvent
- *  com.vaadin.ui.Button$ClickListener
- *  com.vaadin.ui.Component
- *  com.vaadin.ui.DateField
- *  com.vaadin.ui.FormLayout
- *  com.vaadin.ui.Grid
- *  com.vaadin.ui.Grid$Column
- *  com.vaadin.ui.HorizontalLayout
- *  com.vaadin.ui.Label
- *  com.vaadin.ui.Notification
- *  com.vaadin.ui.Notification$Type
- *  com.vaadin.ui.Panel
- *  com.vaadin.ui.SingleSelect
- *  com.vaadin.ui.TextArea
- *  com.vaadin.ui.TextField
- *  com.vaadin.ui.UI
- *  com.vaadin.ui.VerticalLayout
- *  org.vaadin.dialogs.ConfirmDialog
- *  org.vaadin.dialogs.ConfirmDialog$Listener
- */
 package com.example.rmonitor.content;
 
 import com.example.rmonitor.classes.Computer;
@@ -107,7 +61,7 @@ extends ComputerFormLayout {
         HorizontalLayout final_form = new HorizontalLayout(new Component[]{main_column, new VerticalLayout(new Component[]{this.description, this.select_menu})});
         Panel panel = new Panel((Component)final_form);
         panel.setHeight("650px");
-        panel.setWidth("1000px");
+        panel.setWidth("1500px");
         this.addComponents(new Component[]{panel});
         this.setVisible(false);
         this.setSizeUndefined();

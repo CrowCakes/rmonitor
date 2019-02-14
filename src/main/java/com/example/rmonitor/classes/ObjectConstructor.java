@@ -168,6 +168,7 @@ public class ObjectConstructor {
 		 * of a single computer's RentalNumber
 		 * */
 		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		//System.out.println("parseCompleteComputer: " + foo);
 		
 		/**
 		 * Add each RentalNumber in.

@@ -1,35 +1,3 @@
-/*
- * Decompiled with CFR 0.139.
- * 
- * Could not load the following classes:
- *  com.example.rmonitor.classes.ConnectionManager
- *  com.example.rmonitor.classes.ObjectConstructor
- *  com.example.rmonitor.classes.Parts
- *  com.example.rmonitor.content.PartsForm
- *  com.example.rmonitor.content.PartsView
- *  com.example.rmonitor.content.PartsView$1
- *  com.vaadin.data.HasValue
- *  com.vaadin.data.HasValue$ValueChangeEvent
- *  com.vaadin.data.HasValue$ValueChangeListener
- *  com.vaadin.data.ValueProvider
- *  com.vaadin.navigator.View
- *  com.vaadin.shared.Registration
- *  com.vaadin.shared.ui.ValueChangeMode
- *  com.vaadin.ui.Alignment
- *  com.vaadin.ui.Button
- *  com.vaadin.ui.Button$ClickEvent
- *  com.vaadin.ui.Button$ClickListener
- *  com.vaadin.ui.Component
- *  com.vaadin.ui.CssLayout
- *  com.vaadin.ui.Grid
- *  com.vaadin.ui.Grid$Column
- *  com.vaadin.ui.HorizontalLayout
- *  com.vaadin.ui.Panel
- *  com.vaadin.ui.SingleSelect
- *  com.vaadin.ui.TextField
- *  com.vaadin.ui.VerticalLayout
- *  com.vaadin.ui.components.grid.GridSelectionModel
- */
 package com.example.rmonitor.content;
 
 import com.example.rmonitor.classes.ConnectionManager;
@@ -66,9 +34,6 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.vaadin.viritin.button.DownloadButton;
 
-/*
- * Exception performing whole class analysis.
- */
 public class PartsView
 extends CssLayout
 implements View {
@@ -101,8 +66,8 @@ implements View {
         this.main.addComponents(new Component[]{this.layout, this.parts_form});
         this.main.setComponentAlignment((Component)this.parts_form, Alignment.MIDDLE_RIGHT);
         this.panel.setContent((Component)this.main);
-        this.panel.setHeight("700px");
-        this.panel.setWidth("1075px");
+        this.panel.setHeight("650px");
+        this.panel.setWidth("1500px");
         this.addComponent((Component)this.panel);
         this.main.setExpandRatio((Component)this.layout, 0.75f);
         this.main.setExpandRatio((Component)this.parts_form, 0.25f);

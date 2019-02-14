@@ -1,36 +1,3 @@
-/*
- * Decompiled with CFR 0.139.
- * 
- * Could not load the following classes:
- *  com.example.rmonitor.classes.ConnectionManager
- *  com.example.rmonitor.classes.ObjectConstructor
- *  com.example.rmonitor.classes.Parts
- *  com.example.rmonitor.content.PartsForm
- *  com.example.rmonitor.content.PartsForm$1
- *  com.example.rmonitor.content.PartsView
- *  com.example.rmonitor.layouts.PartsLayout
- *  com.vaadin.data.Binder
- *  com.vaadin.data.Binder$Binding
- *  com.vaadin.data.Binder$BindingBuilder
- *  com.vaadin.data.Converter
- *  com.vaadin.data.HasValue
- *  com.vaadin.data.ValueProvider
- *  com.vaadin.data.converter.StringToIntegerConverter
- *  com.vaadin.server.Setter
- *  com.vaadin.shared.Registration
- *  com.vaadin.ui.Button
- *  com.vaadin.ui.Button$ClickEvent
- *  com.vaadin.ui.Button$ClickListener
- *  com.vaadin.ui.Component
- *  com.vaadin.ui.FormLayout
- *  com.vaadin.ui.HorizontalLayout
- *  com.vaadin.ui.Notification
- *  com.vaadin.ui.Notification$Type
- *  com.vaadin.ui.TextField
- *  com.vaadin.ui.UI
- *  org.vaadin.dialogs.ConfirmDialog
- *  org.vaadin.dialogs.ConfirmDialog$Listener
- */
 package com.example.rmonitor.content;
 
 import com.example.rmonitor.classes.ConnectionManager;
@@ -49,9 +16,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import org.vaadin.dialogs.ConfirmDialog;
 
-/*
- * Exception performing whole class analysis.
- */
 public class PartsForm
 extends FormLayout {
     private Parts parts;

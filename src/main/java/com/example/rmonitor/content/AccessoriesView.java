@@ -1,34 +1,3 @@
-/*
- * Decompiled with CFR 0.139.
- * 
- * Could not load the following classes:
- *  com.example.rmonitor.classes.Accessory
- *  com.example.rmonitor.classes.ConnectionManager
- *  com.example.rmonitor.classes.ObjectConstructor
- *  com.example.rmonitor.content.AccessoriesView
- *  com.example.rmonitor.content.AccessoryForm
- *  com.vaadin.data.HasValue
- *  com.vaadin.data.HasValue$ValueChangeEvent
- *  com.vaadin.data.HasValue$ValueChangeListener
- *  com.vaadin.data.ValueProvider
- *  com.vaadin.navigator.View
- *  com.vaadin.shared.Registration
- *  com.vaadin.shared.ui.ValueChangeMode
- *  com.vaadin.ui.Alignment
- *  com.vaadin.ui.Button
- *  com.vaadin.ui.Button$ClickEvent
- *  com.vaadin.ui.Button$ClickListener
- *  com.vaadin.ui.Component
- *  com.vaadin.ui.CssLayout
- *  com.vaadin.ui.Grid
- *  com.vaadin.ui.Grid$Column
- *  com.vaadin.ui.HorizontalLayout
- *  com.vaadin.ui.Panel
- *  com.vaadin.ui.SingleSelect
- *  com.vaadin.ui.TextField
- *  com.vaadin.ui.VerticalLayout
- *  com.vaadin.ui.components.grid.GridSelectionModel
- */
 package com.example.rmonitor.content;
 
 import com.example.rmonitor.classes.Accessory;
@@ -89,8 +58,8 @@ implements View {
         this.main.addComponents(new Component[]{this.layout, this.acc_form});
         this.main.setComponentAlignment((Component)this.acc_form, Alignment.MIDDLE_RIGHT);
         this.panel.setContent((Component)this.main);
-        this.panel.setHeight("700px");
-        this.panel.setWidth("1075px");
+        this.panel.setHeight("650px");
+        this.panel.setWidth("1500px");
         this.addComponents(new Component[]{this.panel});
         this.refreshView();
     }
