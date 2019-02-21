@@ -4,6 +4,7 @@ import com.example.rmonitor.classes.Accessory;
 import com.example.rmonitor.classes.ConnectionManager;
 import com.example.rmonitor.classes.ObjectConstructor;
 import com.example.rmonitor.classes.OnDemandFileDownloader;
+import com.example.rmonitor.classes.ReportGenerator;
 import com.example.rmonitor.content.AccessoryForm;
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ValueChangeMode;
@@ -37,6 +38,7 @@ implements View {
     public static final String VIEW_NAME = "Accessories";
     ConnectionManager manager = new ConnectionManager();
     ObjectConstructor constructor = new ObjectConstructor();
+    ReportGenerator generator = new ReportGenerator();
     final HorizontalLayout button_row;
     final VerticalLayout layout = new VerticalLayout();
     final HorizontalLayout main = new HorizontalLayout();
@@ -126,17 +128,19 @@ implements View {
             @Override
             public String getFilename()
             {
-            	return String.format("Inventory of Accessories - %s.csv", new Date(DateTime.now().getMillis()));
+            	return String.format("Inventory of Accessories - %s.xls", new Date(DateTime.now().getMillis()));
             }
 
             @Override
             public InputStream getStream()
             {
+            	return new ByteArrayInputStream(
+            			generator.generateReportAccessories(manager)
+            			);
+            	/*
             	manager.connect();
             	String response = manager.send("ReportAccessories").trim();
             	manager.disconnect();
-            	
-            	System.out.println("getStream: " + response);
             	
             	byte[] source = null;
             	
@@ -150,7 +154,7 @@ implements View {
             		ex.printStackTrace();
             		return null;
             	}
-            	
+            */	
             }
          };
          

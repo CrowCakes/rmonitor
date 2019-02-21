@@ -4,6 +4,7 @@ import com.example.rmonitor.classes.Computer;
 import com.example.rmonitor.classes.ConnectionManager;
 import com.example.rmonitor.classes.ObjectConstructor;
 import com.example.rmonitor.classes.OnDemandFileDownloader;
+import com.example.rmonitor.classes.ReportGenerator;
 import com.example.rmonitor.content.ComputerForm;
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ValueChangeMode;
@@ -38,6 +39,7 @@ implements View {
     ComputerForm comp_form = new ComputerForm(this);
     ConnectionManager manager = new ConnectionManager();
     ObjectConstructor constructor = new ObjectConstructor();
+    ReportGenerator generator = new ReportGenerator();
     HorizontalLayout layout = new HorizontalLayout();
     HorizontalLayout button_row;
     HorizontalLayout grid_row;
@@ -105,12 +107,14 @@ implements View {
             @Override
             public String getFilename()
             {
-            	return String.format("Inventory of Rental Units - %s.csv", new Date(DateTime.now().getMillis()));
+            	return String.format("Inventory of Rental Units - %s.xls", new Date(DateTime.now().getMillis()));
             }
 
             @Override
             public InputStream getStream()
             {
+            	return new ByteArrayInputStream(generator.generateReportComputers(manager));
+            	/*
             	manager.connect();
             	String response = manager.send("ReportComputers").trim();
             	manager.disconnect();
@@ -129,7 +133,7 @@ implements View {
             		ex.printStackTrace();
             		return null;
             	}
-            	
+            	*/
             }
          };
          

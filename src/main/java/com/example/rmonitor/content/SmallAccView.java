@@ -6,6 +6,7 @@ import com.example.rmonitor.classes.AdvancedFileDownloader.DownloaderEvent;
 import com.example.rmonitor.classes.ConnectionManager;
 import com.example.rmonitor.classes.ObjectConstructor;
 import com.example.rmonitor.classes.OnDemandFileDownloader;
+import com.example.rmonitor.classes.ReportGenerator;
 import com.example.rmonitor.classes.SmallAccessory;
 import com.example.rmonitor.content.SmallAccessoryForm;
 import com.vaadin.navigator.View;
@@ -42,6 +43,7 @@ implements View {
     public static final String VIEW_NAME = "SmallAcc";
     ConnectionManager manager = new ConnectionManager();
     ObjectConstructor constructor = new ObjectConstructor();
+    ReportGenerator generator = new ReportGenerator();
     Grid<SmallAccessory> display_accessories = new Grid<>();
     private SmallAccessoryForm acc_form = new SmallAccessoryForm(this);
     HorizontalLayout button_row;
@@ -87,12 +89,16 @@ implements View {
             @Override
             public String getFilename()
             {
-            	return String.format("Inventory of Bulk Accessories - %s.csv", new Date(DateTime.now().getMillis()));
+            	return String.format("Inventory of Bulk Accessories - %s.xls", new Date(DateTime.now().getMillis()));
             }
 
             @Override
             public InputStream getStream()
             {
+            	return new ByteArrayInputStream(
+            			generator.generateReportSmallAccessories(manager)
+            	);
+            	/*
             	manager.connect();
             	String response = manager.send("ReportSmallAccessories").trim();
             	manager.disconnect();
@@ -111,7 +117,7 @@ implements View {
             		ex.printStackTrace();
             		return null;
             	}
-            	
+            	*/
             }
          };
          
