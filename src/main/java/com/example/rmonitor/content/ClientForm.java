@@ -129,7 +129,12 @@ extends ClientFormLayout {
         if (this.constructor.isClientExisting(this.manager, this.old_client.getName())) {
             this.manager.disconnect();
             System.out.println("Edit Client");
-            String query = String.format("EditClient\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", this.old_client.getName(), this.client.getName(), this.client.getAddress(), this.client.getContact_person(), this.client.getContact_numberStr());
+            String query = String.format("EditClient\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", 
+            		this.old_client.getName(), 
+            		this.client.getName(), 
+            		this.client.getAddress(), 
+            		this.client.getContact_person(), 
+            		this.client.getContact_numberStr());
             this.manager.connect();
             String result = this.manager.send(query);
             this.manager.disconnect();
@@ -137,7 +142,11 @@ extends ClientFormLayout {
         } else {
             this.manager.disconnect();
             System.out.println("Insert New Client");
-            String query = String.format("InsertNewClient\r\n%s\r\n%s\r\n%s\r\n%s", this.client.getName(), this.client.getAddress(), this.client.getContact_person(), this.client.getContact_numberStr());
+            String query = String.format("InsertNewClient\r\n%s\r\n%s\r\n%s\r\n%s", 
+            		this.client.getName(), 
+            		this.client.getAddress(), 
+            		this.client.getContact_person(), 
+            		this.client.getContact_numberStr());
             this.manager.connect();
             String result = this.manager.send(query);
             this.manager.disconnect();
@@ -147,72 +156,5 @@ extends ClientFormLayout {
         this.client_view.refreshView();
         this.setVisible(false);
     }
-
-    /*
-    static HorizontalLayout access$0(ClientForm clientForm) {
-        return clientForm.buttons;
-    }
-
-    static Button access$1(ClientForm clientForm) {
-        return clientForm.delete;
-    }
-
-    static void access$2(ClientForm clientForm) {
-        clientForm.delete();
-    }
-
-    private static Object $deserializeLambda$(SerializedLambda serializedLambda) {
-        switch (serializedLambda.getImplMethodName()) {
-            case "lambda$0": {
-                if (serializedLambda.getImplMethodKind() != 7 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/ui/Button$ClickListener") || !serializedLambda.getFunctionalInterfaceMethodName().equals("buttonClick") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/content/ClientForm") || !serializedLambda.getImplMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V")) break;
-                return (Button.ClickListener & java.io.Serializable)e -> this.save();
-            }
-            case "lambda$1": {
-                if (serializedLambda.getImplMethodKind() != 7 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/ui/Button$ClickListener") || !serializedLambda.getFunctionalInterfaceMethodName().equals("buttonClick") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/content/ClientForm") || !serializedLambda.getImplMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V")) break;
-                return (Button.ClickListener & java.io.Serializable)e -> {
-                    this.buttons.setVisible(false);
-                    this.delete.setVisible(false);
-                    ConfirmDialog.show((UI)this.getUI(), (String)"Confirmation", (String)"Are you sure you want to delete this Client?", (String)"Yes", (String)"No", (ConfirmDialog.Listener)new );
-                };
-            }
-            case "lambda$2": {
-                if (serializedLambda.getImplMethodKind() != 7 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/ui/Button$ClickListener") || !serializedLambda.getFunctionalInterfaceMethodName().equals("buttonClick") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/content/ClientForm") || !serializedLambda.getImplMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V")) break;
-                return (Button.ClickListener & java.io.Serializable)e -> this.cancel();
-            }
-            case "getName": {
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") || !serializedLambda.getFunctionalInterfaceMethodName().equals("apply") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Client") || !serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) break;
-                return Client::getName;
-            }
-            case "setName": {
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") || !serializedLambda.getFunctionalInterfaceMethodName().equals("accept") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Client") || !serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) break;
-                return Client::setName;
-            }
-            case "getAddress": {
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") || !serializedLambda.getFunctionalInterfaceMethodName().equals("apply") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Client") || !serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) break;
-                return Client::getAddress;
-            }
-            case "setAddress": {
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") || !serializedLambda.getFunctionalInterfaceMethodName().equals("accept") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Client") || !serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) break;
-                return Client::setAddress;
-            }
-            case "getContact_person": {
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") || !serializedLambda.getFunctionalInterfaceMethodName().equals("apply") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Client") || !serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) break;
-                return Client::getContact_person;
-            }
-            case "setContact_person": {
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") || !serializedLambda.getFunctionalInterfaceMethodName().equals("accept") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Client") || !serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) break;
-                return Client::setContact_person;
-            }
-            case "getContact_numberStr": {
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") || !serializedLambda.getFunctionalInterfaceMethodName().equals("apply") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Client") || !serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) break;
-                return Client::getContact_numberStr;
-            }
-            case "setContact_number": {
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") || !serializedLambda.getFunctionalInterfaceMethodName().equals("accept") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Client") || !serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) break;
-                return Client::setContact_number;
-            }
-        }
-        throw new IllegalArgumentException("Invalid lambda deserialization");
-    }*/
 }
 

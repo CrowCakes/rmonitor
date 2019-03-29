@@ -212,13 +212,22 @@ extends FormLayout {
         Boolean test2 = this.constructor.isAccessoryExisting(this.manager, this.old_acc);
         this.manager.disconnect();
         if (this.acc.getRentalNumber() == this.old_acc || !this.old_acc.isEmpty() && !this.acc.getRentalNumber().isEmpty() && !test1.booleanValue() && test2.booleanValue()) {
-            String query = String.format("EditAccessory\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", this.old_acc, this.acc.getRentalNumber(), this.acc.getName(), this.acc.getAccessoryType(), Float.valueOf(this.acc.getPrice()));
+            String query = String.format("EditAccessory\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", 
+            		this.old_acc, 
+            		this.acc.getRentalNumber(), 
+            		this.acc.getName(), 
+            		this.acc.getAccessoryType(), 
+            		Float.valueOf(this.acc.getPrice()));
             this.manager.connect();
             String result = this.manager.send(query);
             this.manager.disconnect();
             Notification.show((String)"Edit Accessory", (String)result, (Notification.Type)Notification.Type.HUMANIZED_MESSAGE);
         } else {
-            String query = String.format("InsertNewRentalAccessory\r\n%s\r\n%s\r\n%s\r\n%s", this.acc.getRentalNumber(), this.acc.getName(), this.acc.getAccessoryType(), Float.valueOf(this.acc.getPrice()));
+            String query = String.format("InsertNewRentalAccessory\r\n%s\r\n%s\r\n%s\r\n%s", 
+            		this.acc.getRentalNumber(), 
+            		this.acc.getName(), 
+            		this.acc.getAccessoryType(), 
+            		Float.valueOf(this.acc.getPrice()));
             this.manager.connect();
             String result = this.manager.send(query);
             this.manager.disconnect();

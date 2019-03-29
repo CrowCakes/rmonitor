@@ -68,7 +68,7 @@ implements View {
         this.addStyleName("client-view");
         this.button_row = this.prepare_buttons(user);
         this.prepare_grid(user);
-        this.display_clients.setHeight("600px");
+        this.display_clients.setHeight("575px");
         this.display_clients.setWidth("750px");
         this.client_form.setVisible(false);
         this.layout.addComponents(new Component[]{this.button_row, this.display_clients});

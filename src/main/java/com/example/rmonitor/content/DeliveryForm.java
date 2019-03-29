@@ -606,6 +606,8 @@ extends DeliveryFormLayout {
         String clientid = this.manager.send(String.format("FindClient\r\n%s", this.delivery.getcustomerName()));
         this.manager.disconnect();
         
+        clientid = clientid.replace(":", "");
+        
         if (clientid.isEmpty()) {
             Notification.show((String)"Error", (String)"The client doesn't exist.", (Notification.Type)Notification.Type.ERROR_MESSAGE);
             return;
@@ -697,8 +699,10 @@ extends DeliveryFormLayout {
             		this.delivery.getExtensionIDStr(), 
             		this.delivery.getFrequency());
             
+            String result = null;
             this.manager.connect();
-            String result = this.manager.send(base);
+            //this will return 
+            int last_insert_id = Integer.parseInt(this.manager.send(base).trim());
             this.manager.disconnect();
             
             ArrayList<String> unique_computers = new ArrayList<String>();
@@ -709,7 +713,7 @@ extends DeliveryFormLayout {
                 this.manager.connect();
                 result = this.manager.send(String.format(
                 		"InsertDeliverySpecs\r\n%s\r\n%s", 
-                		this.delivery.getDeliveryIDStr(), 
+                		last_insert_id, 
                 		((Computer)this.computers.get(i)).getRentalNumber()));
                 this.manager.disconnect();
             }
@@ -722,7 +726,7 @@ extends DeliveryFormLayout {
                 this.manager.connect();
                 result = this.manager.send(String.format(
                 		"InsertDeliveryAccessories\r\n%s\r\n%s", 
-                		this.delivery.getDeliveryIDStr(), 
+                		last_insert_id, 
                 		((Accessory)this.accessories.get(i)).getRentalNumber()));
                 this.manager.disconnect();
             }
@@ -735,7 +739,7 @@ extends DeliveryFormLayout {
                 this.manager.connect();
                 result = this.manager.send(String.format(
                 		"InsertDeliveryPeripherals\r\n%s\r\n%s\r\n%s", 
-                		this.delivery.getDeliveryIDStr(), 
+                		last_insert_id, 
                 		i.getName(), 
                 		i.getQuantity()));
                 this.manager.disconnect();

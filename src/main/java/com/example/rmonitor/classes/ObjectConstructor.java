@@ -28,7 +28,7 @@ public class ObjectConstructor {
 	private List<Computer> parseComputer(String foo) {
 		List<Computer> parsed_data = new ArrayList<>();
 		
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		/**
 		 * Currently, every Computer entry is separated by 4 Part entries, so there is a
@@ -46,7 +46,7 @@ public class ObjectConstructor {
 			
 			for (int j=1; j<NUMBER_OF_PARTS + 1; j=j+1) {
 				if (i+j < bar.size()) {
-					foobar = new ArrayList<>(Arrays.asList(bar.get(i+j).split("\\s*,\\s*")));
+					foobar = new ArrayList<>(Arrays.asList(bar.get(i+j).split("\\s*::,\\s*")));
 					parts.add(Integer.parseInt(foobar.get(0)));
 				}
 				else {
@@ -58,7 +58,7 @@ public class ObjectConstructor {
 			/**
 			 * Split the Computer string by comma
 			 * */
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
@@ -107,7 +107,7 @@ public class ObjectConstructor {
 		 * split the response by newline, making a list of strings containing the information
 		 * of a single computer
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		List<String> foobar;
 		List<Integer> parts = new ArrayList<>();
@@ -115,7 +115,7 @@ public class ObjectConstructor {
 			/**
 			 * Split the Computer string by comma
 			 * */
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (i==0 && foobar.size() == 1) {
 				//System.out.println("parseComputerNoParts: Empty computer");
 				break;
@@ -167,7 +167,7 @@ public class ObjectConstructor {
 		 * split the response by newline, making a list of strings containing the information
 		 * of a single computer's RentalNumber
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		//System.out.println("parseCompleteComputer: " + foo);
 		
 		/**
@@ -185,7 +185,7 @@ public class ObjectConstructor {
 			parts = new ArrayList<>();
 			for (int j=1; j<NUMBER_OF_PARTS+1; j=j+1) {
 				if (i+j < bar.size()) {
-					foobar = new ArrayList<>(Arrays.asList(bar.get(i+j).split("\\s*,\\s*")));
+					foobar = new ArrayList<>(Arrays.asList(bar.get(i+j).split("\\s*::,\\s*")));
 					parts.add(Integer.parseInt(foobar.get(0)));
 				}
 				else {
@@ -193,7 +193,7 @@ public class ObjectConstructor {
 				}
 			}
 			
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.get(0).isEmpty()) {
 				break;
 			}
@@ -216,12 +216,12 @@ public class ObjectConstructor {
 		/** split the response by newline, making a list of strings containing the information
 		 * of a single computer
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		//Parse the string containing the details of the Part
 		List<String> foobar;
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
@@ -254,12 +254,12 @@ public class ObjectConstructor {
 		/** split the response by newline, making a list of strings containing the information
 		 * of a single computer
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		//Parse the string containing the details of the Part
 		List<String> foobar;
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
@@ -281,12 +281,12 @@ public class ObjectConstructor {
 		/** split the response by newline, making a list of strings containing the information
 		 * of a single computer
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		//Parse the string containing the details of the Part
 		List<String> foobar;
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
@@ -312,12 +312,12 @@ public class ObjectConstructor {
 		/** split the response by newline, making a list of strings containing the information
 		 * of a single computer
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		//Parse the string containing the details of the Part
 		List<String> foobar;
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
@@ -342,13 +342,13 @@ public class ObjectConstructor {
 		/** split the response by newline, making a list of strings containing the information
 		 * of a single computer
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		//Parse the string containing the details of the Part
 		List<String> foobar;
 		String so, si, ard, pos; int extension, freq;
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
@@ -401,13 +401,13 @@ public class ObjectConstructor {
 		/** split the response by newline, making a list of strings containing the information
 		 * of a single computer
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		//Parse the string containing the details of the Part
 		List<String> foobar;
 		String so, si, ard, pos; int extension, freq;
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				System.out.println("empty set returned from server");
 				System.out.println(foobar);
@@ -462,13 +462,13 @@ public class ObjectConstructor {
 		/** split the response by newline, making a list of strings containing the information
 		 * of a single computer
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		//Parse the string containing the details of the Delivery
 		List<String> foobar;
 		String so, si, ard, pos; int extension, freq;
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				parsed_data.add(new 
 						Delivery(0, "", "", "", "", "", null, null, "", "", 0, 0));
@@ -520,11 +520,11 @@ public class ObjectConstructor {
 	private List<PullOutForm> parsePullOutForm(String foo) {
 		List<PullOutForm> parsed_data = new ArrayList<>();
 		
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		List<String> foobar;
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				break;
 			}
@@ -548,11 +548,11 @@ public class ObjectConstructor {
 	private List<User> parseUserData(String foo) {
 		List<User> parsed_data = new ArrayList<>();
 		
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		List<String> foobar;
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				break;
 			}
@@ -658,14 +658,14 @@ public class ObjectConstructor {
 		 * split the response by newline, making a list of strings containing the information
 		 * of a single computer's RentalNumber
 		 * 
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		/**
 		 * Add each RentalNumber in
 		 * 
 		List<String> foobar;
 		for (int i=0; i < bar.size(); i = i+1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
@@ -1156,12 +1156,14 @@ public class ObjectConstructor {
 		String foo = new String(manager.send("ViewClients"));
 		
 		//split query results into client strings
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		List<String> foobar;
 		//parse client strings into Clients
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
+			System.out.println("-- ConstructClients --");
+			System.out.println(foobar);
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
@@ -1170,7 +1172,7 @@ public class ObjectConstructor {
 					foobar.get(1),
 					foobar.get(2),
 					foobar.get(3),
-					Integer.parseInt(foobar.get(4))
+					Long.parseLong(foobar.get(4))
 					));
 		}
 		
@@ -1191,12 +1193,12 @@ public class ObjectConstructor {
 		String foo = new String(manager.send(query));
 		
 		//split query results into client strings
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		List<String> foobar;
 		//parse client strings into Clients
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
@@ -1205,7 +1207,7 @@ public class ObjectConstructor {
 					foobar.get(1),
 					foobar.get(2),
 					foobar.get(3),
-					Integer.parseInt(foobar.get(4))
+					Long.parseLong(foobar.get(4))
 					));
 		}
 		
@@ -1224,12 +1226,12 @@ public class ObjectConstructor {
 		String foo = new String(manager.send("ViewClients"));
 		
 		//split query results into client strings
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		List<String> foobar;
 		//parse client strings into Clients
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				break;
 			}
@@ -1238,7 +1240,7 @@ public class ObjectConstructor {
 					foobar.get(1),
 					foobar.get(2),
 					foobar.get(3),
-					Integer.parseInt(foobar.get(4))
+					Long.parseLong(foobar.get(4))
 					));
 		
 		}
@@ -1264,12 +1266,12 @@ public class ObjectConstructor {
 		String foo = new String(manager.send("ViewClients"));
 		
 		//split query results into client strings
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		List<String> foobar;
 		//parse client strings into Clients
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
@@ -1339,12 +1341,12 @@ public class ObjectConstructor {
 		
 		String foo = new String(manager.send(query));
 		
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		List<String> foobar;
 		
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				break;
 			}
@@ -1499,13 +1501,13 @@ public class ObjectConstructor {
 		 * split the response by newline, making a list of strings containing the information
 		 * of a single computer's RentalNumber
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		/**
 		 * Add each RentalNumber in
 		 * */
 		List<String> foobar;
 		for (int i=0; i < bar.size(); i = i+1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			try {
 				System.out.println(foobar.get(0));
 				parsed_data.add(Integer.parseInt(foobar.get(0)));
@@ -1532,7 +1534,7 @@ public class ObjectConstructor {
 		* split the response by newline, making a list of strings containing the information
 		* of a single computer
 		* */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 					
 		/**
 		* Currently, every Computer entry is separated by 4 Part entries, so there is a
@@ -1544,7 +1546,7 @@ public class ObjectConstructor {
 			/**
 			 * Split the Computer string by comma
 			* */
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 						
 			existing_numbers.add(foobar.get(0));
 		}
@@ -1571,12 +1573,12 @@ public class ObjectConstructor {
 		/** split the response by newline, making a list of strings containing the information
 		 * of a single computer
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		//Parse the string containing the details of the Part
 		List<String> foobar;
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			parsed_data.add(Integer.parseInt(foobar.get(0)));
 		}
 		
@@ -1602,12 +1604,12 @@ public class ObjectConstructor {
 		/** split the response by newline, making a list of strings containing the information
 		 * of a single computer
 		 * */
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		//Parse the string containing the details of the Part
 		List<String> foobar;
 		for (int i=0; i < bar.size(); i = i + 1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			parsed_data.add(foobar.get(2));
 		}
 		
@@ -1652,11 +1654,11 @@ public class ObjectConstructor {
 		
 		String foo = new String(manager.send("ViewDeliveries"));
 		
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		List<String> foobar;
 		for (int i=0; i<bar.size(); i=i+1) {
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*,\\s*")));
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			parsed_data.add(foobar.get(0));
 		}
 		
