@@ -14,6 +14,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
@@ -46,6 +47,10 @@ implements View {
     Grid<Accessory> display_accessories;
     private AccessoryForm acc_form = new AccessoryForm(this);
     TextField filter;
+    Label text = new Label("");
+    int offset = 0;
+    int limit = 20;
+    int count = 0;
 
     /***
      * Constructs the Accessories module.
@@ -56,7 +61,7 @@ implements View {
         this.addStyleName("acc-view");
         this.prepare_grid(user);
         this.button_row = this.buttonsLayout(user);
-        this.layout.addComponents(new Component[]{this.button_row, this.display_accessories});
+        this.layout.addComponents(new Component[]{this.button_row, this.display_accessories, fetchNextBatch()});
         this.main.addComponents(new Component[]{this.layout, this.acc_form});
         this.main.setComponentAlignment((Component)this.acc_form, Alignment.MIDDLE_RIGHT);
         this.panel.setContent((Component)this.main);
@@ -76,7 +81,7 @@ implements View {
         this.display_accessories.addColumn(Accessory::getName).setCaption("Name");
         this.display_accessories.addColumn(Accessory::getAccessoryType).setCaption("Type");
         this.display_accessories.addColumn(Accessory::getStatus).setCaption("Status");
-        this.display_accessories.setHeight("600px");
+        this.display_accessories.setHeight("500px");
         this.display_accessories.setWidth("600px");
         if (user.equals("Admin")) {
             this.display_accessories.asSingleSelect().addValueChangeListener(event -> {
@@ -88,6 +93,25 @@ implements View {
             });
         }
     }
+    
+    private HorizontalLayout fetchNextBatch() {
+    	Button previous = new Button("Previous 20");
+        previous.addClickListener(e -> {
+        	offset = (offset - limit < 0) ? 0 : offset - limit;
+        	displayNew(offset, limit);
+        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        });
+        Button next = new Button("Next 20");
+        next.addClickListener(e -> {
+        	offset = (offset + limit > count) ? offset : offset + limit;
+        	limit = (offset + limit > count) ? count - offset : limit;
+        	displayNew(offset, limit);
+        	
+        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	limit = 20;
+        });
+        return new HorizontalLayout(previous, text, next);
+    }
 
     /***
      * Constructs the buttons used to query the database controller.
@@ -98,7 +122,10 @@ implements View {
         HorizontalLayout row = new HorizontalLayout();
         this.filter = new TextField();
         this.filter.setPlaceholder("Filter by Rental Number");
-        this.filter.addValueChangeListener(e -> this.updateList());
+        this.filter.addValueChangeListener(e -> {
+        	if (!filter.getValue().isEmpty()) this.updateList(); 
+        	else this.refreshView();
+        });
         this.filter.setValueChangeMode(ValueChangeMode.LAZY);
         
         Button ViewAccessories = new Button("Refresh");
@@ -210,10 +237,28 @@ implements View {
      */
     public void refreshView() {
         List<Accessory> parts = new ArrayList<>();
+        offset = 0;
+        
+        manager.connect();
+        count = constructor.getAccessoriesCount(manager);
+        manager.disconnect();
+        
         this.manager.connect();
-        parts = this.constructor.constructAccessories(this.manager);
+        parts = this.constructor.constructAccessories(this.manager, offset, limit);
         this.manager.disconnect();
+        
         this.display_accessories.setItems(parts);
+        text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+    }
+    
+    private void displayNew(int offset, int limit) {
+    	List<Accessory> parts = new ArrayList<>();
+    	
+    	 this.manager.connect();
+         parts = this.constructor.constructAccessories(this.manager, offset, limit);
+         this.manager.disconnect();
+         
+         this.display_accessories.setItems(parts);
     }
 }
 

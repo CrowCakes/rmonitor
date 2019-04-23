@@ -14,6 +14,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import java.sql.Date;
@@ -34,7 +35,11 @@ implements View {
     final HorizontalLayout main;
     Grid<Delivery> display_deliveries;
     TextField filter;
+    Label text = new Label("");
     int latestIncrement;
+    int offset = 0;
+    int limit = 20;
+    int count = 0;
 
     /***
      * Constructs the module used to view Deliveries.
@@ -52,7 +57,7 @@ implements View {
         this.addStyleName("delv-view");
         this.grid_row = this.gridLayout(user);
         this.button_row = this.buttonsLayout(user);
-        this.layout.addComponents(new Component[]{this.button_row, this.grid_row});
+        this.layout.addComponents(new Component[]{this.button_row, this.grid_row, fetchNextBatch()});
         this.main.addComponents(new Component[]{this.layout});
         if (!user.equals("Viewer")) {
             this.main.addComponents(new Component[]{this.delv_form});
@@ -79,7 +84,9 @@ implements View {
         this.display_deliveries.addColumn(Delivery::getExtensionID).setCaption("Extended to?");
         this.display_deliveries.addColumn(Delivery::getTotalPrice).setCaption("Total Price");
         this.display_deliveries.addColumn(Delivery::getNumberOfUnits).setCaption("# of Units");
-        this.display_deliveries.setHeight("600px");
+        
+        display_deliveries.setFrozenColumnCount(1);
+        this.display_deliveries.setHeight("500px");
         this.display_deliveries.setWidth("1000px");
         this.display_deliveries.setSelectionMode(Grid.SelectionMode.SINGLE);
         
@@ -97,6 +104,25 @@ implements View {
         grid_row.addComponents(new Component[]{this.display_deliveries});
         return grid_row;
     }
+    
+    private HorizontalLayout fetchNextBatch() {
+    	Button previous = new Button("Previous 20");
+        previous.addClickListener(e -> {
+        	offset = (offset - limit < 0) ? 0 : offset - limit;
+        	displayNew(offset, limit);
+        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        });
+        Button next = new Button("Next 20");
+        next.addClickListener(e -> {
+        	offset = (offset + limit > count) ? offset : offset + limit;
+        	limit = (offset + limit > count) ? count - offset : limit;
+        	displayNew(offset, limit);
+        	
+        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	limit = 20;
+        });
+        return new HorizontalLayout(previous, text, next);
+    }
 
     /***
      * Constructs the buttons that will query the database.
@@ -107,10 +133,13 @@ implements View {
         HorizontalLayout row = new HorizontalLayout();
         this.filter = new TextField();
         this.filter.setPlaceholder("Filter by DeliveryID");
-        this.filter.addValueChangeListener(e -> this.updateList());
+        this.filter.addValueChangeListener(e -> {
+        	if (!filter.getValue().isEmpty()) this.updateList(); 
+        	else this.resetView();
+        });
         this.filter.setValueChangeMode(ValueChangeMode.LAZY);
         
-        Button ViewDeliveries = new Button("ViewDeliveries");
+        Button ViewDeliveries = new Button("Refresh");
         ViewDeliveries.addClickListener(e -> this.resetView());
         
         Button quit = new Button("Kill Server");
@@ -210,8 +239,50 @@ implements View {
      */
     public void resetView() {
         List<Delivery> parts = new ArrayList<>();
+        offset = 0;
+        
         this.manager.connect();
-        parts = this.constructor.constructDeliveries(this.manager);
+        parts = this.constructor.constructDeliveries(this.manager, offset, limit);
+        this.manager.disconnect();
+        
+        manager.connect();
+        count = constructor.getDeliveryCount(manager);
+        manager.disconnect();
+        
+        // get the total price of the Delivery order
+        for (Delivery x : parts) {
+            List<Computer> foo = new ArrayList<>();
+            List<Accessory> bar = new ArrayList<>();
+            float comp_total = 0.0f;
+            float acc_total = 0.0f;
+            if (x.isPersisted()) {
+                this.manager.connect();
+                foo = this.constructor.fetchCompleteComputers(this.manager, x.getDeliveryID());
+                this.manager.disconnect();
+                this.manager.connect();
+                bar = this.constructor.fetchDeliveryAccessories(this.manager, x.getDeliveryID());
+                this.manager.disconnect();
+            }
+            for (Computer y : foo) {
+                comp_total += y.getPrice();
+            }
+            for (Accessory z : bar) {
+                acc_total += z.getPrice();
+            }
+            //System.out.println(String.format("DeliveiesView: D#%s value = %s", x.getDeliveryIDStr(), Float.valueOf(comp_total + acc_total)));
+            x.updateTotalPrice(comp_total + acc_total);
+            x.setNumberOfUnits(foo.size());
+        }
+        this.display_deliveries.setItems(parts);
+        text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        this.layout.setVisible(true);
+    }
+    
+    private void displayNew(int offset, int limit) {
+    	List<Delivery> parts = new ArrayList<>();
+        
+        this.manager.connect();
+        parts = this.constructor.constructDeliveries(this.manager, offset, limit);
         this.manager.disconnect();
         
         // get the total price of the Delivery order
@@ -234,12 +305,12 @@ implements View {
             for (Accessory z : bar) {
                 acc_total += z.getPrice();
             }
-            System.out.println(String.format("DeliveiesView: D#%s value = %s", x.getDeliveryIDStr(), Float.valueOf(comp_total + acc_total)));
+            //System.out.println(String.format("DeliveiesView: D#%s value = %s", x.getDeliveryIDStr(), Float.valueOf(comp_total + acc_total)));
             x.updateTotalPrice(comp_total + acc_total);
             x.setNumberOfUnits(foo.size());
         }
         this.display_deliveries.setItems(parts);
-        this.layout.setVisible(true);
+        text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
     }
 
     public int returnLatestIncrement() {

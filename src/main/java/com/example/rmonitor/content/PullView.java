@@ -39,7 +39,7 @@ implements View {
         this.pullouts.addColumn(PullOutForm::getDateCreated).setCaption("Date Created");
         this.pullouts.addColumn(PullOutForm::getStatus).setCaption("Status");
         this.pullouts.setSelectionMode(Grid.SelectionMode.SINGLE);
-        this.pullouts.setHeight("600px");
+        this.pullouts.setHeight("550px");
         this.pullouts.setWidth("1000px");
         this.pullouts.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() == null) {

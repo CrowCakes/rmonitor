@@ -97,6 +97,78 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	private List<Computer> parseComputer(String foo, int offset, int limit) {
+		List<Computer> parsed_data = new ArrayList<>();
+		
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		
+		/**
+		 * Currently, every Computer entry is separated by NUMBER_OF_PARTS Part entries, so there is a
+		 * need to skip over those entries
+		 * */
+		List<String> foobar;
+		List<Integer> parts;
+		for (int i=0; i < bar.size(); i = i + NUMBER_OF_PARTS + 1) {
+			
+			/**
+			 * Reset the placeholder list, then
+			 * store the PartIDs of the NUMBER_OF_PARTS Parts belonging to the Computer
+			 * */
+			parts = new ArrayList<>();
+			
+			for (int j=1; j<NUMBER_OF_PARTS + 1; j=j+1) {
+				if (i+j < bar.size()) {
+					foobar = new ArrayList<>(Arrays.asList(bar.get(i+j).split("\\s*::,\\s*")));
+					parts.add(Integer.parseInt(foobar.get(0)));
+				}
+				else {
+					parts.add(0);
+				}
+			}
+			
+			
+			/**
+			 * Split the Computer string by comma
+			 * */
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
+			if (foobar.size() == 1) {
+				return new ArrayList<>();
+			}
+			/**
+			 * Add the Computer and its Parts to the List of Computers to be returned
+			 * Do a manual check for the boolean's value, since it's just an integer and not a Java boolean
+			 * */
+			if (Integer.parseInt(foobar.get(6)) != 0) {
+				parsed_data.add(new Computer(foobar.get(0), 
+						foobar.get(2), 
+						foobar.get(3), 
+						foobar.get(4), 
+						Date.valueOf(foobar.get(5)), 
+						Boolean.TRUE, 
+						parts,
+						foobar.get(1),
+						foobar.get(7),
+						Float.parseFloat(foobar.get(8))
+						));
+			}
+			else {
+				parsed_data.add(new Computer(foobar.get(0), 
+						foobar.get(2), 
+						foobar.get(3), 
+						foobar.get(4), 
+						Date.valueOf(foobar.get(5)), 
+						Boolean.FALSE, 
+						parts,
+						foobar.get(1),
+						foobar.get(7),
+						Float.parseFloat(foobar.get(8))
+						));
+			}
+			
+		}
+		return parsed_data.subList(offset, offset+limit);
+	}
+	
 	/**
 	 * Parses a string to construct a List of Computer. String must not contain Parts information.
 	 * */
@@ -207,6 +279,14 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	private int partsCount(String foo) {
+		/* split the response by newline, making a list of strings containing the information
+		 * of a single part
+		 */
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		return bar.size();
+	}
+	
 	/**
 	 * Construct a List of Parts from a string.
 	 * */
@@ -246,6 +326,50 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	private List<Parts> parsePart(String foo, int offset, int limit) {
+		List<Parts> parsed_data = new ArrayList<>();
+		
+		/** split the response by newline, making a list of strings containing the information
+		 * of a single computer
+		 * */
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		
+		//Parse the string containing the details of the Part
+		List<String> foobar;
+		for (int i=offset; i < offset+limit; i = i + 1) {
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
+			if (foobar.size() == 1) {
+				return new ArrayList<>();
+			}
+			float price;
+			try {
+				price = Float.parseFloat(foobar.get(4));
+			}
+			catch (NumberFormatException ex) {
+				price = 0;
+			}
+			parsed_data.add(
+					new Parts(
+							Integer.parseInt(foobar.get(0)), 
+							foobar.get(1), 
+							foobar.get(2), 
+							foobar.get(3), 
+							price
+							)
+					);
+		}
+		
+		return parsed_data;
+	}
+	
+	private int accessoriesCount(String foo) {
+		 /* split the response by newline, making a list of strings containing the information
+		  * of a single accessory
+		  * */
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		return bar.size();
+	 }
+	 
 	/**
 	 * Construct a List of Accessories from a string.
 	 * */
@@ -259,6 +383,28 @@ public class ObjectConstructor {
 		//Parse the string containing the details of the Part
 		List<String> foobar;
 		for (int i=0; i < bar.size(); i = i + 1) {
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
+			if (foobar.size() == 1) {
+				return new ArrayList<>();
+			}
+			parsed_data.add(new Accessory(foobar.get(2), foobar.get(0), foobar.get(1), foobar.get(3),
+					Float.parseFloat(foobar.get(4))
+					)
+					);
+		}
+		return parsed_data;
+	}
+	
+	private List<Accessory> parseAccessory(String foo, int offset, int limit) {
+		List<Accessory> parsed_data = new ArrayList<>();
+		/** split the response by newline, making a list of strings containing the information
+		 * of a single computer
+		 * */
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		
+		//Parse the string containing the details of the Part
+		List<String> foobar;
+		for (int i=offset; i < offset+limit; i = i + 1) {
 			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
@@ -331,6 +477,14 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	private int deliveryCount(String foo) {
+		/** split the response by newline, making a list of strings containing the information
+		 * of a single delivery
+		 * */
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		return bar.size();
+	}
+	
 	/**
 	 * Construct a List of Deliveries from a string.
 	 * @param foo
@@ -348,6 +502,60 @@ public class ObjectConstructor {
 		List<String> foobar;
 		String so, si, ard, pos; int extension, freq;
 		for (int i=0; i < bar.size(); i = i + 1) {
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
+			if (foobar.size() == 1) {
+				return new ArrayList<>();
+			}
+			so = foobar.get(2);
+			si = foobar.get(3);
+			ard = foobar.get(4);
+			pos = foobar.get(5);
+				
+				try {
+					extension = Integer.parseInt(foobar.get(10));
+				} catch (NumberFormatException ex) {
+					extension = 0;
+				}
+				try {
+					freq = Integer.parseInt(foobar.get(11));
+				}
+				catch (NumberFormatException ex) {
+					freq = 0;
+				}
+				
+				parsed_data.add(new Delivery(
+						Integer.parseInt(foobar.get(0)), 
+						so, 
+						si, 
+						ard, 
+						pos, 
+						foobar.get(1), 
+						Date.valueOf(foobar.get(6)), 
+						Date.valueOf(foobar.get(7)), 
+						foobar.get(8), 
+						foobar.get(9), 
+						extension,
+						freq
+						)
+						);
+
+		}
+		
+		return parsed_data;
+	}
+	
+	private List<Delivery> parseDelivery(String foo, int offset, int limit) {
+		List<Delivery> parsed_data = new ArrayList<>();
+		
+		/** split the response by newline, making a list of strings containing the information
+		 * of a single computer
+		 * */
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		
+		//Parse the string containing the details of the Part
+		List<String> foobar;
+		String so, si, ard, pos; int extension, freq;
+		for (int i=offset; i < offset+limit; i = i + 1) {
 			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
@@ -624,6 +832,26 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	public List<Computer> constructComputers(ConnectionManager manager, int offset, int limit) {
+		List<Computer> parsed_data = new ArrayList<>();
+		
+		//query the information from database
+		String foo = new String(manager.send("ViewComputers"));
+		
+		parsed_data = parseComputer(foo, offset, limit);
+		return parsed_data;
+	}
+	
+	public int getComputerCount(ConnectionManager manager) {
+		List<Computer> parsed_data = new ArrayList<>();
+		
+		//query the information from database
+		String foo = new String(manager.send("ViewComputers"));
+		
+		parsed_data = parseComputer(foo);
+		return parsed_data.size();
+	}
+	
 	/**
 	 * Find the Computer with matching user-input rental number. 
 	 * Calls constructComputers(manager, rentalNumber)
@@ -773,6 +1001,21 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	public List<Parts> constructParts(ConnectionManager manager, int offset, int limit) {
+		List<Parts> parsed_data = new ArrayList<>();
+		
+		//query the information from database
+		String foo = new String(manager.send("ViewParts"));
+		
+		parsed_data = parsePart(foo, offset, limit);
+		return parsed_data;
+	}
+	
+	public int getPartsCount(ConnectionManager manager) {
+		String foo = new String(manager.send("ViewParts"));
+		return partsCount(foo);
+	}
+	
 	/**
 	 * Create the list of Accessories by first requesting for the Accessories 
 	 * from the database controller, then converting the raw string output into
@@ -808,6 +1051,22 @@ public class ObjectConstructor {
 		parsed_data = parseAccessory(foo);
 		
 		return parsed_data;
+	}
+	
+	public List<Accessory> constructAccessories(ConnectionManager manager, int offset, int limit) {
+		List<Accessory> parsed_data = new ArrayList<>();
+		
+		//query the information from database
+		String foo = new String(manager.send("ViewAccessoryRentalNumbersByTypes"));
+		
+		parsed_data = parseAccessory(foo, offset, limit);
+		
+		return parsed_data;
+	}
+	
+	public int getAccessoriesCount(ConnectionManager manager) {
+		String foo = new String(manager.send("ViewAccessoryRentalNumbersByTypes"));
+		return accessoriesCount(foo);
 	}
 	
 	/**
@@ -1005,6 +1264,24 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 
+	public List<Delivery> constructDeliveries(ConnectionManager manager, int offset, int limit) {
+		List<Delivery> parsed_data = new ArrayList<>();
+		
+		//query the information from database
+		String foo = new String(manager.send("ViewDeliveries"));
+		
+		parsed_data = parseDelivery(foo, offset, limit);
+		
+		return parsed_data;
+	}
+	
+	public int getDeliveryCount(ConnectionManager manager) {
+		//query the information from database
+		String foo = new String(manager.send("ViewDeliveries"));
+		
+		return deliveryCount(foo);
+	}
+	
 	/**
 	 * Find the Delivery that corresponds exactly to the user-input deliveryID.
 	 * 

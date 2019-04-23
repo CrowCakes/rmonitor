@@ -1,5 +1,6 @@
 package com.example.rmonitor.content;
 
+import com.example.rmonitor.classes.Accessory;
 import com.example.rmonitor.classes.Computer;
 import com.example.rmonitor.classes.ConnectionManager;
 import com.example.rmonitor.classes.ObjectConstructor;
@@ -45,6 +46,10 @@ implements View {
     HorizontalLayout grid_row;
     VerticalLayout main = new VerticalLayout();
     VerticalLayout cpuFilter = new VerticalLayout();
+    Label text = new Label("");
+    int offset = 0;
+    int limit = 20;
+    int count = 0;
 
     /***
      * Constructs the module used to view the list of Computers.
@@ -59,9 +64,28 @@ implements View {
         if ("Admin".equals(user)) {
             this.layout.addComponent((Component)this.comp_form);
         }
-        this.main.addComponents(new Component[]{this.button_row, this.layout, this.cpuFilter});
+        this.main.addComponents(new Component[]{this.button_row, this.layout, fetchNextBatch(), this.cpuFilter});
         this.addComponent((Component)this.main);
         this.refreshList();
+    }
+    
+    private HorizontalLayout fetchNextBatch() {
+    	Button previous = new Button("Previous 20");
+        previous.addClickListener(e -> {
+        	offset = (offset - limit < 0) ? 0 : offset - limit;
+        	displayNew(offset, limit);
+        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        });
+        Button next = new Button("Next 20");
+        next.addClickListener(e -> {
+        	offset = (offset + limit > count) ? offset : offset + limit;
+        	limit = (offset + limit > count) ? count - offset : limit;
+        	displayNew(offset, limit);
+        	
+        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	limit = 20;
+        });
+        return new HorizontalLayout(previous, text, next);
     }
 
     /***
@@ -73,7 +97,10 @@ implements View {
         HorizontalLayout button_row = new HorizontalLayout();
         this.filter = new TextField();
         this.filter.setPlaceholder("Filter by Rental Number");
-        this.filter.addValueChangeListener(e -> this.updateList());
+        this.filter.addValueChangeListener(e -> {
+        	if (!filter.getValue().isEmpty()) this.updateList(); 
+        	else this.refreshList();
+        });
         this.filter.setValueChangeMode(ValueChangeMode.LAZY);
         
         Button ViewComputers = new Button("Refresh");
@@ -184,8 +211,10 @@ implements View {
         this.display_response.addColumn(Computer::getPurchaseDate).setCaption("Purchase Date");
         this.display_response.addColumn(Computer::getIsUpgraded).setCaption("Upgraded?");
         this.display_response.addColumn(Computer::getStatus).setCaption("Status");
+        this.display_response.addColumn(Computer::getDescription).setCaption("Remarks");
         this.display_response.setSelectionMode(Grid.SelectionMode.SINGLE);
-        this.display_response.setHeight("275px");
+        display_response.setFrozenColumnCount(1);
+        this.display_response.setHeight("325px");
         this.display_response.setWidth("1000px");
         
         grid_row.addComponents(new Component[]{this.display_response});
@@ -223,9 +252,14 @@ implements View {
      */
     private void refreshList() {
         List<Computer> computers = new ArrayList<>();
+        offset = 0;
+        
+        manager.connect();
+        count = constructor.getComputerCount(manager);
+        manager.disconnect();
         
         this.manager.connect();
-        computers = this.constructor.constructComputers(this.manager);
+        computers = this.constructor.constructComputers(this.manager, offset, limit);
         this.manager.disconnect();
         this.display_response.setItems(computers);
         
@@ -238,6 +272,17 @@ implements View {
         for (String text : cpus) {
             this.cpuFilter.addComponent((Component)new Label(text));
         }
+        text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+    }
+    
+    private void displayNew(int offset, int limit) {
+    	List<Computer> computers = new ArrayList<>();
+        
+        this.manager.connect();
+        computers = this.constructor.constructComputers(this.manager, offset, limit);
+        this.manager.disconnect();
+        
+        this.display_response.setItems(computers);
     }
 
     /***

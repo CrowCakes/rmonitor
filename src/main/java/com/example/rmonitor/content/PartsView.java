@@ -16,6 +16,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
@@ -49,7 +50,11 @@ implements View {
     final VerticalLayout layout;
     final Panel panel;
     TextField filter;
+    Label text = new Label("");
     int latestIncrement;
+    int offset = 0;
+    int limit = 20;
+    int count = 0;
 
     public PartsView(String user) {
         this.manager = null;
@@ -64,7 +69,7 @@ implements View {
         this.addStyleName("parts-view");
         this.prepare_grid(user);
         this.button_row = this.buttonsLayout(user);
-        this.layout.addComponents(new Component[]{this.button_row, this.display_parts});
+        this.layout.addComponents(new Component[]{this.button_row, this.display_parts, fetchNextBatch()});
         this.main.addComponents(new Component[]{this.layout, this.parts_form});
         this.main.setComponentAlignment((Component)this.parts_form, Alignment.MIDDLE_RIGHT);
         this.panel.setContent((Component)this.main);
@@ -83,7 +88,7 @@ implements View {
         this.display_parts.addColumn(Parts::getPartType).setCaption("Type");
         this.display_parts.addColumn(Parts::getStatus).setCaption("Status");
         this.display_parts.addColumn(Parts::getParent).setCaption("Current Unit");
-        this.display_parts.setHeight("600px");
+        this.display_parts.setHeight("500px");
         this.display_parts.setWidth("750px");
         
         if (user.equals("Admin")) {
@@ -96,12 +101,34 @@ implements View {
             });
         }
     }
+    
+    private HorizontalLayout fetchNextBatch() {
+    	Button previous = new Button("Previous 20");
+        previous.addClickListener(e -> {
+        	offset = (offset - limit < 0) ? 0 : offset - limit;
+        	displayNew(offset, limit);
+        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        });
+        Button next = new Button("Next 20");
+        next.addClickListener(e -> {
+        	offset = (offset + limit > count) ? offset : offset + limit;
+        	limit = (offset + limit > count) ? count - offset : limit;
+        	displayNew(offset, limit);
+        	
+        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	limit = 20;
+        });
+        return new HorizontalLayout(previous, text, next);
+    }
 
     private HorizontalLayout buttonsLayout(String user) {
         HorizontalLayout row = new HorizontalLayout();
         this.filter = new TextField();
         this.filter.setPlaceholder("Filter by PartID");
-        this.filter.addValueChangeListener(e -> this.updateList());
+        this.filter.addValueChangeListener(e -> {
+        	if (!filter.getValue().isEmpty()) this.updateList(); 
+        	else this.refreshView();
+        });
         this.filter.setValueChangeMode(ValueChangeMode.LAZY);
         
         Button ViewParts = new Button("Refresh");
@@ -215,9 +242,14 @@ implements View {
 
     public void refreshView() {
         List<Parts> parts = new ArrayList<>();
+        offset = 0;
+        
+        manager.connect();
+        count = constructor.getPartsCount(manager);
+        manager.disconnect();
         
         this.manager.connect();
-        parts = this.constructor.constructParts(this.manager);
+        parts = this.constructor.constructParts(this.manager, offset, limit);
         this.manager.disconnect();
         
         for (Parts x : parts) {
@@ -225,6 +257,28 @@ implements View {
             
             this.manager.connect();
             String parent = this.manager.send(query).trim();
+            parent = parent.replace(":", "");
+            this.manager.disconnect();
+            
+            x.setParent(parent);
+        }
+        this.display_parts.setItems(parts);
+        text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+    }
+    
+    private void displayNew(int offset, int limit) {
+    	List<Parts> parts = new ArrayList<>();
+        
+        this.manager.connect();
+        parts = this.constructor.constructParts(this.manager, offset, limit);
+        this.manager.disconnect();
+        
+        for (Parts x : parts) {
+            String query = String.format("TraceComputer\r\n%s", x.getPartID());
+            
+            this.manager.connect();
+            String parent = this.manager.send(query).trim();
+            parent = parent.replace(":", "");
             this.manager.disconnect();
             
             x.setParent(parent);
