@@ -22,82 +22,21 @@ public class ObjectConstructor {
 	 */
 	int NUMBER_OF_PARTS = 9;
 	
+	/***
+	 * Returns the number of Computers returned by the server query. Similar in structure to parseComputer.
+	 * @param foo The list of Computers as a raw String
+	 * @return Number of Computers returned by the server query
+	 */
+	private int computerCount(String foo) {
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		//Each computer entry occurs at N*(NUMBER_OF_PARTS+1), where N is a whole number
+		return bar.size() / (NUMBER_OF_PARTS+1);
+	}
+	
 	/**
 	 * Parses a string to construct a List of Computers.
 	 * */
 	private List<Computer> parseComputer(String foo) {
-		List<Computer> parsed_data = new ArrayList<>();
-		
-		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
-		
-		/**
-		 * Currently, every Computer entry is separated by 4 Part entries, so there is a
-		 * need to skip over those entries
-		 * */
-		List<String> foobar;
-		List<Integer> parts;
-		for (int i=0; i < bar.size(); i = i + NUMBER_OF_PARTS + 1) {
-			
-			/**
-			 * Reset the placeholder list, then
-			 * store the PartIDs of the 5 Parts belonging to the Computer
-			 * */
-			parts = new ArrayList<>();
-			
-			for (int j=1; j<NUMBER_OF_PARTS + 1; j=j+1) {
-				if (i+j < bar.size()) {
-					foobar = new ArrayList<>(Arrays.asList(bar.get(i+j).split("\\s*::,\\s*")));
-					parts.add(Integer.parseInt(foobar.get(0)));
-				}
-				else {
-					parts.add(0);
-				}
-			}
-			
-			
-			/**
-			 * Split the Computer string by comma
-			 * */
-			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
-			if (foobar.size() == 1) {
-				return new ArrayList<>();
-			}
-			/**
-			 * Add the Computer and its Parts to the List of Computers to be returned
-			 * Do a manual check for the boolean's value, since it's just an integer and not a Java boolean
-			 * */
-			if (Integer.parseInt(foobar.get(6)) != 0) {
-				parsed_data.add(new Computer(foobar.get(0), 
-						foobar.get(2), 
-						foobar.get(3), 
-						foobar.get(4), 
-						Date.valueOf(foobar.get(5)), 
-						Boolean.TRUE, 
-						parts,
-						foobar.get(1),
-						foobar.get(7),
-						Float.parseFloat(foobar.get(8))
-						));
-			}
-			else {
-				parsed_data.add(new Computer(foobar.get(0), 
-						foobar.get(2), 
-						foobar.get(3), 
-						foobar.get(4), 
-						Date.valueOf(foobar.get(5)), 
-						Boolean.FALSE, 
-						parts,
-						foobar.get(1),
-						foobar.get(7),
-						Float.parseFloat(foobar.get(8))
-						));
-			}
-			
-		}
-		return parsed_data;
-	}
-	
-	private List<Computer> parseComputer(String foo, int offset, int limit) {
 		List<Computer> parsed_data = new ArrayList<>();
 		
 		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
@@ -166,7 +105,87 @@ public class ObjectConstructor {
 			}
 			
 		}
-		return parsed_data.subList(offset, offset+limit);
+		return parsed_data;
+	}
+	
+	/***
+	 * Parses a string to construct a List of Computers that start at index offset and end at index offset+limit.
+	 * @param foo The list of Computers as a raw String
+	 * @param offset The index to begin parsing at (inclusive)
+	 * @param limit The index to end parsing at (exclusive)
+	 * @return
+	 */
+	private List<Computer> parseComputer(String foo, int offset, int limit) {
+		List<Computer> parsed_data = new ArrayList<>();
+		
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		
+		/**
+		 * Currently, every Computer entry is separated by NUMBER_OF_PARTS Part entries, so there is a
+		 * need to skip over those entries
+		 * */
+		List<String> foobar;
+		List<Integer> parts;
+		for (int i=offset*(NUMBER_OF_PARTS + 1); i < (offset+limit)*(NUMBER_OF_PARTS + 1); i = i + NUMBER_OF_PARTS + 1) {
+			
+			/**
+			 * Reset the placeholder list, then
+			 * store the PartIDs of the NUMBER_OF_PARTS Parts belonging to the Computer
+			 * */
+			parts = new ArrayList<>();
+			
+			for (int j=1; j<NUMBER_OF_PARTS + 1; j=j+1) {
+				if (i+j < bar.size()) {
+					foobar = new ArrayList<>(Arrays.asList(bar.get(i+j).split("\\s*::,\\s*")));
+					parts.add(Integer.parseInt(foobar.get(0)));
+				}
+				else {
+					parts.add(0);
+				}
+			}
+			
+			
+			/**
+			 * Split the Computer string by comma
+			 * */
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
+			if (foobar.size() == 1) {
+				return new ArrayList<>();
+			}
+			/**
+			 * Add the Computer and its Parts to the List of Computers to be returned
+			 * Do a manual check for the boolean's value, since it's just an integer and not a Java boolean
+			 * */
+			if (Integer.parseInt(foobar.get(6)) != 0) {
+				parsed_data.add(new Computer(foobar.get(0), 
+						foobar.get(2), 
+						foobar.get(3), 
+						foobar.get(4), 
+						Date.valueOf(foobar.get(5)), 
+						Boolean.TRUE, 
+						parts,
+						foobar.get(1),
+						foobar.get(7),
+						Float.parseFloat(foobar.get(8))
+						));
+			}
+			else {
+				parsed_data.add(new Computer(foobar.get(0), 
+						foobar.get(2), 
+						foobar.get(3), 
+						foobar.get(4), 
+						Date.valueOf(foobar.get(5)), 
+						Boolean.FALSE, 
+						parts,
+						foobar.get(1),
+						foobar.get(7),
+						Float.parseFloat(foobar.get(8))
+						));
+			}
+			
+		}
+		//return parsed_data.subList(offset, offset+limit);
+		return parsed_data;
 	}
 	
 	/**
@@ -279,6 +298,11 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/***
+	 * Returns the number of Parts returned by the server query. Similar in structure to parsePart.
+	 * @param foo The list of Parts as a raw String
+	 * @return The number of Parts returned by the server query
+	 */
 	private int partsCount(String foo) {
 		/* split the response by newline, making a list of strings containing the information
 		 * of a single part
@@ -326,6 +350,13 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/***
+	 * Construct a List of Parts from a string, starting at index offset and ending at index offset+limit
+	 * @param foo The list of Parts as a raw String
+	 * @param offset The index to begin parsing at (inclusive)
+	 * @param limit The index to end parsing at (exclusive)
+	 * @return
+	 */
 	private List<Parts> parsePart(String foo, int offset, int limit) {
 		List<Parts> parsed_data = new ArrayList<>();
 		
@@ -362,6 +393,11 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/***
+	 * Returns the number of Accessories returned by the server query. Similar in structure to parseAccessory.
+	 * @param foo The list of Accessories as a raw String
+	 * @return The number of Accessories returned by the server query
+	 */
 	private int accessoriesCount(String foo) {
 		 /* split the response by newline, making a list of strings containing the information
 		  * of a single accessory
@@ -395,6 +431,13 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/***
+	 * Construct a List of Accessories from a string, starting at index offset and ending at index offset+limit.
+	 * @param foo The list of Accessories as a raw String
+	 * @param offset The index to begin parsing at (inclusive)
+	 * @param limit The index to end parsing at (exclusive)
+	 * @return
+	 */
 	private List<Accessory> parseAccessory(String foo, int offset, int limit) {
 		List<Accessory> parsed_data = new ArrayList<>();
 		/** split the response by newline, making a list of strings containing the information
@@ -477,6 +520,11 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/***
+	 * Returns the number of Deliveries returned from server query. Similar in structure to parseDelivery
+	 * @param foo The list of Deliveries as a raw String
+	 * @return The number of Deliveries returned from server query
+	 */
 	private int deliveryCount(String foo) {
 		/** split the response by newline, making a list of strings containing the information
 		 * of a single delivery
@@ -544,6 +592,13 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/***
+	 * Construct a List of Deliveries from a string, starting at index offset and ending at index offset+limit.
+	 * @param foo The list of Deliveries as a raw String
+	 * @param offset The index to begin parsing at (inclusive)
+	 * @param limit The index to end parsing at (exclusive)
+	 * @return
+	 */
 	private List<Delivery> parseDelivery(String foo, int offset, int limit) {
 		List<Delivery> parsed_data = new ArrayList<>();
 		
@@ -749,6 +804,46 @@ public class ObjectConstructor {
 	}
 	
 	/**
+	 * Construct a List of PullOutForms from a string, starting at index offset and ending at index offset+limit.
+	 * @param foo The list of PullOutForms as a raw String
+	 * @param offset The index to begin parsing at (inclusive)
+	 * @param limit The index to end parsing at (exclusive)
+	 * @return
+	 */
+	private List<PullOutForm> parsePullOutForm(String foo, int offset, int limit) {
+		List<PullOutForm> parsed_data = new ArrayList<>();
+		
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		
+		List<String> foobar;
+		for (int i=offset; i < offset+limit; i = i + 1) {
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
+			if (foobar.size() == 1) {
+				break;
+			}
+			
+			parsed_data.add(new PullOutForm(
+					Integer.parseInt(foobar.get(0)),
+					foobar.get(1),
+					Date.valueOf(foobar.get(2)),
+					foobar.get(3)
+					));
+		}
+		
+		return parsed_data;
+	}
+	
+	/***
+	 * Returns the number of Pull-outs returned from server query. Similar in structure to parsePullOutForm.
+	 * @param foo The list of Pull-outs as a raw String
+	 * @return The number of Pull-outs returned from server query
+	 */
+	private int pullOutCount(String foo) {
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		return bar.size();
+	}
+	
+	/**
 	 * Construct a List of Users from a string.
 	 * @param foo
 	 * @return
@@ -832,6 +927,13 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/**
+	 * Create the list of Computers by first requesting for the Computers 
+	 * from the database controller, then converting the raw string output into
+	 * a list of Computer objects. Returns up to a specified number of entries at a time.
+	 * 
+	 * The function assumes that the connection passed to it is active
+	 * */
 	public List<Computer> constructComputers(ConnectionManager manager, int offset, int limit) {
 		List<Computer> parsed_data = new ArrayList<>();
 		
@@ -842,14 +944,12 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/***
+	 * Returns the total number of Computers currently in database.
+	 */
 	public int getComputerCount(ConnectionManager manager) {
-		List<Computer> parsed_data = new ArrayList<>();
-		
-		//query the information from database
 		String foo = new String(manager.send("ViewComputers"));
-		
-		parsed_data = parseComputer(foo);
-		return parsed_data.size();
+		return computerCount(foo);
 	}
 	
 	/**
@@ -1001,6 +1101,13 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/**
+	 * Create the list of Parts by first requesting for the Parts 
+	 * from the database controller, then converting the raw string output into
+	 * a list of Parts objects. Returns up to a specified number of entries at a time.
+	 * 
+	 * The function assumes that the connection passed to it is active
+	 * */
 	public List<Parts> constructParts(ConnectionManager manager, int offset, int limit) {
 		List<Parts> parsed_data = new ArrayList<>();
 		
@@ -1011,6 +1118,9 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/***
+	 * Returns the total number of Parts currently in database.
+	 */
 	public int getPartsCount(ConnectionManager manager) {
 		String foo = new String(manager.send("ViewParts"));
 		return partsCount(foo);
@@ -1053,6 +1163,13 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/**
+	 * Create the list of Accessories by first requesting for the Accessories matching the user-input filter
+	 * from the database controller, then converting the raw string output into
+	 * a list of Accessories objects. Returns up to a specified number of entries at a time.
+	 * 
+	 * The function assumes that the connection passed to it is active
+	 * */
 	public List<Accessory> constructAccessories(ConnectionManager manager, int offset, int limit) {
 		List<Accessory> parsed_data = new ArrayList<>();
 		
@@ -1064,6 +1181,9 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/***
+	 * Returns the total number of Accessories currently in database.
+	 */
 	public int getAccessoriesCount(ConnectionManager manager) {
 		String foo = new String(manager.send("ViewAccessoryRentalNumbersByTypes"));
 		return accessoriesCount(foo);
@@ -1264,6 +1384,14 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 
+	/**
+	 * Create the list of Deliveries by first requesting for the Deliveries 
+	 * that match the user-input name
+	 * from the database controller, then converting the raw string output into
+	 * a list of Deliveries. Returns up to a specified number of entries a time.
+	 * 
+	 * The function assumes that the connection passed to it is active
+	 * */
 	public List<Delivery> constructDeliveries(ConnectionManager manager, int offset, int limit) {
 		List<Delivery> parsed_data = new ArrayList<>();
 		
@@ -1275,6 +1403,9 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	/***
+	 * Returns the total number of Deliveries currently in database.
+	 */
 	public int getDeliveryCount(ConnectionManager manager) {
 		//query the information from database
 		String foo = new String(manager.send("ViewDeliveries"));
@@ -1587,6 +1718,29 @@ public class ObjectConstructor {
 		parsed_data = parsePullOutForm(foo);
 		
 		return parsed_data;
+	}
+	
+	/**
+	 * Gets the list of PullOutForms from the server. Returns up to a specified number of entries.
+	 * 
+	 * ConnectionManager must be actively connected already when passed to the function.
+	 * */
+	public List<PullOutForm> constructPullOuts(ConnectionManager manager, int offset, int limit) {
+		List<PullOutForm> parsed_data = new ArrayList<>();
+		
+		String foo = manager.send("ViewPullOuts");
+		
+		parsed_data = parsePullOutForm(foo, offset, limit);
+		
+		return parsed_data;
+	}
+	
+	/***
+	 * Returns the total number of Pull-outs currently in the database.
+	 */
+	public int getPullOutCount(ConnectionManager manager) {
+		String foo = manager.send("ViewPullOuts");
+		return pullOutCount(foo);
 	}
 	
 	/**

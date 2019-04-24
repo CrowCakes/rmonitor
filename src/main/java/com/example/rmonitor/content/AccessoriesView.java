@@ -47,9 +47,11 @@ implements View {
     Grid<Accessory> display_accessories;
     private AccessoryForm acc_form = new AccessoryForm(this);
     TextField filter;
+    
+    int MAX_LIMIT = 20;
     Label text = new Label("");
     int offset = 0;
-    int limit = 20;
+    int limit = MAX_LIMIT;
     int count = 0;
 
     /***
@@ -57,6 +59,7 @@ implements View {
      * @param user - string denoting the user's role
      */
     public AccessoriesView(String user) {
+    	limit = MAX_LIMIT;
         this.setSizeFull();
         this.addStyleName("acc-view");
         this.prepare_grid(user);
@@ -95,20 +98,23 @@ implements View {
     }
     
     private HorizontalLayout fetchNextBatch() {
-    	Button previous = new Button("Previous 20");
+    	Button previous = new Button(String.format("Previous %d", MAX_LIMIT));
         previous.addClickListener(e -> {
         	offset = (offset - limit < 0) ? 0 : offset - limit;
+        	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
+        	
         	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	limit = MAX_LIMIT;
         });
-        Button next = new Button("Next 20");
+        Button next = new Button(String.format("Next %d", MAX_LIMIT));
         next.addClickListener(e -> {
         	offset = (offset + limit > count) ? offset : offset + limit;
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
         	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
-        	limit = 20;
+        	limit = MAX_LIMIT;
         });
         return new HorizontalLayout(previous, text, next);
     }
@@ -243,12 +249,15 @@ implements View {
         count = constructor.getAccessoriesCount(manager);
         manager.disconnect();
         
+        limit = (offset + limit > count) ? count - offset : limit;
+        
         this.manager.connect();
         parts = this.constructor.constructAccessories(this.manager, offset, limit);
         this.manager.disconnect();
         
         this.display_accessories.setItems(parts);
         text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        limit = MAX_LIMIT;
     }
     
     private void displayNew(int offset, int limit) {

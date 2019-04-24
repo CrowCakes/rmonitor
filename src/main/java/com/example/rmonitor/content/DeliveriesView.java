@@ -35,10 +35,12 @@ implements View {
     final HorizontalLayout main;
     Grid<Delivery> display_deliveries;
     TextField filter;
+    
     Label text = new Label("");
     int latestIncrement;
+    int MAX_LIMIT = 20;
     int offset = 0;
-    int limit = 20;
+    int limit = MAX_LIMIT;
     int count = 0;
 
     /***
@@ -46,6 +48,7 @@ implements View {
      * @param user - string denoting the user's role
      */
     public DeliveriesView(String user) {
+    	limit = MAX_LIMIT;
         this.manager = null;
         this.constructor = null;
         this.manager = new ConnectionManager();
@@ -106,20 +109,23 @@ implements View {
     }
     
     private HorizontalLayout fetchNextBatch() {
-    	Button previous = new Button("Previous 20");
+    	Button previous = new Button(String.format("Previous %d", MAX_LIMIT));
         previous.addClickListener(e -> {
         	offset = (offset - limit < 0) ? 0 : offset - limit;
+        	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
+        	
         	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	limit = MAX_LIMIT;
         });
-        Button next = new Button("Next 20");
+        Button next = new Button(String.format("Next %d", MAX_LIMIT));
         next.addClickListener(e -> {
         	offset = (offset + limit > count) ? offset : offset + limit;
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
         	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
-        	limit = 20;
+        	limit = MAX_LIMIT;
         });
         return new HorizontalLayout(previous, text, next);
     }
@@ -240,14 +246,16 @@ implements View {
     public void resetView() {
         List<Delivery> parts = new ArrayList<>();
         offset = 0;
+
+        manager.connect();
+        count = constructor.getDeliveryCount(manager);
+        manager.disconnect();
+
+        limit = (offset + limit > count) ? count - offset : limit;
         
         this.manager.connect();
         parts = this.constructor.constructDeliveries(this.manager, offset, limit);
         this.manager.disconnect();
-        
-        manager.connect();
-        count = constructor.getDeliveryCount(manager);
-        manager.disconnect();
         
         // get the total price of the Delivery order
         for (Delivery x : parts) {
@@ -275,6 +283,8 @@ implements View {
         }
         this.display_deliveries.setItems(parts);
         text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        limit = MAX_LIMIT;
+        
         this.layout.setVisible(true);
     }
     

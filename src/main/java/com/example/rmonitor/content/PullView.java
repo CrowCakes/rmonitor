@@ -10,6 +10,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +25,17 @@ implements View {
     VerticalLayout layout = new VerticalLayout();
     HorizontalLayout main = new HorizontalLayout();
     PullForm pulloutform;
+    
+    Label text = new Label("");
+    int MAX_LIMIT = 20;
+    int count = 0;
+    int offset = 0;
+    int limit = MAX_LIMIT;
 
     public PullView() {
+    	limit = MAX_LIMIT;
         this.prepare_grid();
-        this.layout.addComponents(new Component[]{this.buttonLayout(), this.pullouts});
+        this.layout.addComponents(new Component[]{this.buttonLayout(), this.pullouts, fetchNextBatch()});
         this.main.addComponent((Component)this.layout);
         this.addComponent((Component)this.main);
         this.refreshView();
@@ -39,7 +47,7 @@ implements View {
         this.pullouts.addColumn(PullOutForm::getDateCreated).setCaption("Date Created");
         this.pullouts.addColumn(PullOutForm::getStatus).setCaption("Status");
         this.pullouts.setSelectionMode(Grid.SelectionMode.SINGLE);
-        this.pullouts.setHeight("550px");
+        this.pullouts.setHeight("500px");
         this.pullouts.setWidth("1000px");
         this.pullouts.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() == null) {
@@ -58,6 +66,28 @@ implements View {
                 this.layout.setVisible(false);
             }
         });
+    }
+    
+    private HorizontalLayout fetchNextBatch() {
+    	Button previous = new Button(String.format("Previous %d", MAX_LIMIT));
+        previous.addClickListener(e -> {
+        	offset = (offset - limit < 0) ? 0 : offset - limit;
+        	limit = (offset + limit > count) ? count - offset : limit;
+        	displayNew(offset, limit);
+        	
+        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	limit = MAX_LIMIT;
+        });
+        Button next = new Button(String.format("Next %d", MAX_LIMIT));
+        next.addClickListener(e -> {
+        	offset = (offset + limit > count) ? offset : offset + limit;
+        	limit = (offset + limit > count) ? count - offset : limit;
+        	displayNew(offset, limit);
+        	
+        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	limit = MAX_LIMIT;
+        });
+        return new HorizontalLayout(previous, text, next);
     }
 
     private HorizontalLayout buttonLayout() {
@@ -82,9 +112,31 @@ implements View {
 
     public void refreshView() {
         List<PullOutForm> pullouts = new ArrayList<>();
+        offset = 0;
+        
+        manager.connect();
+        count = constructor.getPullOutCount(manager);
+        manager.disconnect();
+
+        limit = (offset + limit > count) ? count - offset : limit;
         
         this.manager.connect();
-        pullouts = this.constructor.constructPullOuts(this.manager);
+        pullouts = this.constructor.constructPullOuts(this.manager, offset, limit);
+        this.manager.disconnect();
+        
+        this.pullouts.setItems(pullouts);
+        text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        limit = MAX_LIMIT;
+        
+        this.pullouts.deselectAll();
+        this.layout.setVisible(true);
+    }
+    
+    private void displayNew(int offset, int limit) {
+    	List<PullOutForm> pullouts = new ArrayList<>();
+        
+        this.manager.connect();
+        pullouts = this.constructor.constructPullOuts(this.manager, offset, limit);
         this.manager.disconnect();
         
         this.pullouts.setItems(pullouts);

@@ -50,13 +50,17 @@ implements View {
     final VerticalLayout layout;
     final Panel panel;
     TextField filter;
+    
+    int MAX_LIMIT = 20;
     Label text = new Label("");
-    int latestIncrement;
     int offset = 0;
-    int limit = 20;
+    int limit = MAX_LIMIT;
     int count = 0;
 
+    int latestIncrement;
+
     public PartsView(String user) {
+    	limit = MAX_LIMIT;
         this.manager = null;
         this.constructor = null;
         this.parts_form = new PartsForm(this);
@@ -103,20 +107,23 @@ implements View {
     }
     
     private HorizontalLayout fetchNextBatch() {
-    	Button previous = new Button("Previous 20");
+    	Button previous = new Button(String.format("Previous %d", MAX_LIMIT));
         previous.addClickListener(e -> {
         	offset = (offset - limit < 0) ? 0 : offset - limit;
+        	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
+        	
         	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	limit = MAX_LIMIT;
         });
-        Button next = new Button("Next 20");
+        Button next = new Button(String.format("Next %d", MAX_LIMIT));
         next.addClickListener(e -> {
         	offset = (offset + limit > count) ? offset : offset + limit;
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
         	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
-        	limit = 20;
+        	limit = MAX_LIMIT;
         });
         return new HorizontalLayout(previous, text, next);
     }
@@ -248,6 +255,8 @@ implements View {
         count = constructor.getPartsCount(manager);
         manager.disconnect();
         
+        limit = (offset + limit > count) ? count - offset : limit;
+        
         this.manager.connect();
         parts = this.constructor.constructParts(this.manager, offset, limit);
         this.manager.disconnect();
@@ -264,6 +273,7 @@ implements View {
         }
         this.display_parts.setItems(parts);
         text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        limit = MAX_LIMIT;
     }
     
     private void displayNew(int offset, int limit) {

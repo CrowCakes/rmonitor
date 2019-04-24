@@ -46,9 +46,11 @@ implements View {
     HorizontalLayout grid_row;
     VerticalLayout main = new VerticalLayout();
     VerticalLayout cpuFilter = new VerticalLayout();
+    
+    int MAX_LIMIT = 20;
     Label text = new Label("");
     int offset = 0;
-    int limit = 20;
+    int limit = MAX_LIMIT;
     int count = 0;
 
     /***
@@ -56,6 +58,7 @@ implements View {
      * @param user - string denoting the user's role
      */
     public ComputerView(String user) {
+    	limit = MAX_LIMIT;
         this.setSizeFull();
         this.addStyleName("computer-view");
         this.grid_row = this.gridLayout(user);
@@ -70,20 +73,23 @@ implements View {
     }
     
     private HorizontalLayout fetchNextBatch() {
-    	Button previous = new Button("Previous 20");
+    	Button previous = new Button(String.format("Previous %d", MAX_LIMIT));
         previous.addClickListener(e -> {
         	offset = (offset - limit < 0) ? 0 : offset - limit;
+        	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
+        	
         	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	limit = MAX_LIMIT;
         });
-        Button next = new Button("Next 20");
+        Button next = new Button(String.format("Next %d", MAX_LIMIT));
         next.addClickListener(e -> {
         	offset = (offset + limit > count) ? offset : offset + limit;
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
         	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
-        	limit = 20;
+        	limit = MAX_LIMIT;
         });
         return new HorizontalLayout(previous, text, next);
     }
@@ -257,6 +263,8 @@ implements View {
         manager.connect();
         count = constructor.getComputerCount(manager);
         manager.disconnect();
+
+        limit = (offset + limit > count) ? count - offset : limit;
         
         this.manager.connect();
         computers = this.constructor.constructComputers(this.manager, offset, limit);
@@ -273,6 +281,7 @@ implements View {
             this.cpuFilter.addComponent((Component)new Label(text));
         }
         text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        limit = MAX_LIMIT;
     }
     
     private void displayNew(int offset, int limit) {
