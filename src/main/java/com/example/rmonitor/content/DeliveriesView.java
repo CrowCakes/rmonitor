@@ -28,15 +28,17 @@ implements View {
     public static final String VIEW_NAME = "Deliveries";
     ConnectionManager manager;
     ObjectConstructor constructor;
+    
     private DeliveryForm delv_form;
-    final HorizontalLayout button_row;
-    final HorizontalLayout grid_row;
-    final VerticalLayout layout;
-    final HorizontalLayout main;
     Grid<Delivery> display_deliveries;
     TextField filter;
+    final HorizontalLayout button_row;
+    final HorizontalLayout grid_row;
     
-    Label text = new Label("");
+    final VerticalLayout layout;
+    final HorizontalLayout main;
+    
+    Label display_count = new Label("");
     int latestIncrement;
     int MAX_LIMIT = 20;
     int offset = 0;
@@ -115,7 +117,7 @@ implements View {
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
-        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         	limit = MAX_LIMIT;
         });
         Button next = new Button(String.format("Next %d", MAX_LIMIT));
@@ -124,10 +126,10 @@ implements View {
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
-        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         	limit = MAX_LIMIT;
         });
-        return new HorizontalLayout(previous, text, next);
+        return new HorizontalLayout(previous, display_count, next);
     }
 
     /***
@@ -282,7 +284,7 @@ implements View {
             x.setNumberOfUnits(foo.size());
         }
         this.display_deliveries.setItems(parts);
-        text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         limit = MAX_LIMIT;
         
         this.layout.setVisible(true);
@@ -320,7 +322,7 @@ implements View {
             x.setNumberOfUnits(foo.size());
         }
         this.display_deliveries.setItems(parts);
-        text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
     }
 
     public int returnLatestIncrement() {

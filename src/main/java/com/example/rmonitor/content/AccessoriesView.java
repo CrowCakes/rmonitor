@@ -40,6 +40,7 @@ implements View {
     ConnectionManager manager = new ConnectionManager();
     ObjectConstructor constructor = new ObjectConstructor();
     ReportGenerator generator = new ReportGenerator();
+    
     final HorizontalLayout button_row;
     final VerticalLayout layout = new VerticalLayout();
     final HorizontalLayout main = new HorizontalLayout();
@@ -49,7 +50,7 @@ implements View {
     TextField filter;
     
     int MAX_LIMIT = 20;
-    Label text = new Label("");
+    Label display_count = new Label("");
     int offset = 0;
     int limit = MAX_LIMIT;
     int count = 0;
@@ -104,7 +105,7 @@ implements View {
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
-        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         	limit = MAX_LIMIT;
         });
         Button next = new Button(String.format("Next %d", MAX_LIMIT));
@@ -113,10 +114,10 @@ implements View {
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
-        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         	limit = MAX_LIMIT;
         });
-        return new HorizontalLayout(previous, text, next);
+        return new HorizontalLayout(previous, display_count, next);
     }
 
     /***
@@ -256,7 +257,7 @@ implements View {
         this.manager.disconnect();
         
         this.display_accessories.setItems(parts);
-        text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         limit = MAX_LIMIT;
     }
     

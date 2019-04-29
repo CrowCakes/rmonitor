@@ -119,6 +119,7 @@ public class ObjectConstructor {
 		List<Computer> parsed_data = new ArrayList<>();
 		
 		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		bar = bar.subList(offset*(NUMBER_OF_PARTS + 1), (offset+limit)*(NUMBER_OF_PARTS + 1));
 		
 		/**
 		 * Currently, every Computer entry is separated by NUMBER_OF_PARTS Part entries, so there is a
@@ -126,7 +127,7 @@ public class ObjectConstructor {
 		 * */
 		List<String> foobar;
 		List<Integer> parts;
-		for (int i=offset*(NUMBER_OF_PARTS + 1); i < (offset+limit)*(NUMBER_OF_PARTS + 1); i = i + NUMBER_OF_PARTS + 1) {
+		for (int i=0; i < bar.size(); i = i + NUMBER_OF_PARTS + 1) {
 			
 			/**
 			 * Reset the placeholder list, then
@@ -364,10 +365,11 @@ public class ObjectConstructor {
 		 * of a single computer
 		 * */
 		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		bar = bar.subList(offset, offset+limit);
 		
 		//Parse the string containing the details of the Part
 		List<String> foobar;
-		for (int i=offset; i < offset+limit; i = i + 1) {
+		for (int i=0; i < bar.size(); i = i + 1) {
 			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
@@ -444,10 +446,11 @@ public class ObjectConstructor {
 		 * of a single computer
 		 * */
 		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		bar = bar.subList(offset, offset+limit);
 		
 		//Parse the string containing the details of the Part
 		List<String> foobar;
-		for (int i=offset; i < offset+limit; i = i + 1) {
+		for (int i=0; i < bar.size(); i = i + 1) {
 			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
@@ -606,11 +609,12 @@ public class ObjectConstructor {
 		 * of a single computer
 		 * */
 		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		bar = bar.subList(offset, offset+limit);
 		
 		//Parse the string containing the details of the Part
 		List<String> foobar;
 		String so, si, ard, pos; int extension, freq;
-		for (int i=offset; i < offset+limit; i = i + 1) {
+		for (int i=0; i < bar.size(); i = i + 1) {
 			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
@@ -814,9 +818,10 @@ public class ObjectConstructor {
 		List<PullOutForm> parsed_data = new ArrayList<>();
 		
 		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		bar = bar.subList(offset, offset+limit);
 		
 		List<String> foobar;
-		for (int i=offset; i < offset+limit; i = i + 1) {
+		for (int i=0; i < bar.size(); i = i + 1) {
 			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
 			if (foobar.size() == 1) {
 				break;

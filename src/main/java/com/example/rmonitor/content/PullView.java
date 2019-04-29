@@ -20,17 +20,20 @@ extends CssLayout
 implements View {
     ConnectionManager manager = new ConnectionManager();
     ObjectConstructor constructor = new ObjectConstructor();
+    
     Grid<PullOutForm> pullouts = new Grid<>();
-    int latestIncrement;
-    VerticalLayout layout = new VerticalLayout();
-    HorizontalLayout main = new HorizontalLayout();
     PullForm pulloutform;
     
-    Label text = new Label("");
+    VerticalLayout layout = new VerticalLayout();
+    HorizontalLayout main = new HorizontalLayout();
+    
+    Label display_count = new Label("");
     int MAX_LIMIT = 20;
     int count = 0;
     int offset = 0;
     int limit = MAX_LIMIT;
+    
+    int latestIncrement;
 
     public PullView() {
     	limit = MAX_LIMIT;
@@ -75,7 +78,7 @@ implements View {
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
-        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         	limit = MAX_LIMIT;
         });
         Button next = new Button(String.format("Next %d", MAX_LIMIT));
@@ -84,10 +87,10 @@ implements View {
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
-        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         	limit = MAX_LIMIT;
         });
-        return new HorizontalLayout(previous, text, next);
+        return new HorizontalLayout(previous, display_count, next);
     }
 
     private HorizontalLayout buttonLayout() {
@@ -125,7 +128,7 @@ implements View {
         this.manager.disconnect();
         
         this.pullouts.setItems(pullouts);
-        text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         limit = MAX_LIMIT;
         
         this.pullouts.deselectAll();

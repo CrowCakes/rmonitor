@@ -35,20 +35,22 @@ public class ComputerView
 extends CssLayout
 implements View {
     public static final String VIEW_NAME = "Computer";
-    Grid<Computer> display_response;
-    TextField filter;
-    ComputerForm comp_form = new ComputerForm(this);
     ConnectionManager manager = new ConnectionManager();
     ObjectConstructor constructor = new ObjectConstructor();
     ReportGenerator generator = new ReportGenerator();
-    HorizontalLayout layout = new HorizontalLayout();
+    
+    Grid<Computer> display_response;
+    TextField filter;
+    ComputerForm comp_form = new ComputerForm(this);
     HorizontalLayout button_row;
     HorizontalLayout grid_row;
-    VerticalLayout main = new VerticalLayout();
+    
+    HorizontalLayout layout = new HorizontalLayout();
     VerticalLayout cpuFilter = new VerticalLayout();
+    VerticalLayout main = new VerticalLayout();
     
     int MAX_LIMIT = 20;
-    Label text = new Label("");
+    Label display_count = new Label("");
     int offset = 0;
     int limit = MAX_LIMIT;
     int count = 0;
@@ -79,7 +81,7 @@ implements View {
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
-        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         	limit = MAX_LIMIT;
         });
         Button next = new Button(String.format("Next %d", MAX_LIMIT));
@@ -88,10 +90,10 @@ implements View {
         	limit = (offset + limit > count) ? count - offset : limit;
         	displayNew(offset, limit);
         	
-        	text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        	display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         	limit = MAX_LIMIT;
         });
-        return new HorizontalLayout(previous, text, next);
+        return new HorizontalLayout(previous, display_count, next);
     }
 
     /***
@@ -280,7 +282,7 @@ implements View {
         for (String text : cpus) {
             this.cpuFilter.addComponent((Component)new Label(text));
         }
-        text.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
+        display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         limit = MAX_LIMIT;
     }
     
