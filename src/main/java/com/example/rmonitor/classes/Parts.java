@@ -7,6 +7,7 @@ public class Parts {
 	String status;
 	float price;
 	String parent;
+	String remarks;
 	
 	public String getParent() {
 		return parent;
@@ -16,11 +17,12 @@ public class Parts {
 		this.parent = parent;
 	}
 
-	public Parts(int pid, String n, String pt, String s, float price) {
+	public Parts(int pid, String n, String pt, String s, String remarks, float price) {
 		this.partID = pid;
 		this.name = n;
 		this.partType = pt;
 		this.status = s;
+		this.remarks = remarks;
 		this.price = price;
 	}
 	
@@ -79,5 +81,13 @@ public class Parts {
 
 	public void setPrice(String price) {
 		this.price = Float.parseFloat(price);
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 }

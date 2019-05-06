@@ -332,7 +332,7 @@ public class ObjectConstructor {
 			}
 			float price;
 			try {
-				price = Float.parseFloat(foobar.get(4));
+				price = Float.parseFloat(foobar.get(5));
 			}
 			catch (NumberFormatException ex) {
 				price = 0;
@@ -342,7 +342,8 @@ public class ObjectConstructor {
 							Integer.parseInt(foobar.get(0)), 
 							foobar.get(1), 
 							foobar.get(2), 
-							foobar.get(3), 
+							foobar.get(3),
+							foobar.get(4),
 							price
 							)
 					);
@@ -376,7 +377,7 @@ public class ObjectConstructor {
 			}
 			float price;
 			try {
-				price = Float.parseFloat(foobar.get(4));
+				price = Float.parseFloat(foobar.get(5));
 			}
 			catch (NumberFormatException ex) {
 				price = 0;
@@ -387,6 +388,7 @@ public class ObjectConstructor {
 							foobar.get(1), 
 							foobar.get(2), 
 							foobar.get(3), 
+							foobar.get(4),
 							price
 							)
 					);

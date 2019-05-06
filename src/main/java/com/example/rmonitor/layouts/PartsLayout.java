@@ -71,7 +71,7 @@ extends VerticalLayout {
         Button addPart = new Button("Create New Part");
         addPart.addClickListener(e -> {
             this.clearSelection();
-            this.parts_form.setParts(new Parts(0, "", "", "", 0.0f));
+            this.parts_form.setParts(new Parts(0, "", "", "", "", 0.0f));
         });
         addPart.setEnabled(false);
         

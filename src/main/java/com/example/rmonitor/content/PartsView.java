@@ -92,7 +92,10 @@ implements View {
         this.display_parts.addColumn(Parts::getName).setCaption("Name");
         this.display_parts.addColumn(Parts::getPartType).setCaption("Type");
         this.display_parts.addColumn(Parts::getStatus).setCaption("Status");
+        this.display_parts.addColumn(Parts::getRemarks).setCaption("Remarks");
         this.display_parts.addColumn(Parts::getParent).setCaption("Current Unit");
+        
+        display_parts.setFrozenColumnCount(1);
         this.display_parts.setHeight("500px");
         this.display_parts.setWidth("750px");
         
@@ -145,7 +148,7 @@ implements View {
         Button addPart = new Button("Create New Part");
         addPart.addClickListener(e -> {
             this.clearSelection();
-            this.parts_form.setParts(new Parts(0, "", "", "", 0.0f));
+            this.parts_form.setParts(new Parts(0, "", "", "", "", 0.0f));
         });
         if (!user.equals("Admin")) {
             addPart.setEnabled(false);

@@ -12,6 +12,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import org.vaadin.dialogs.ConfirmDialog;
@@ -27,6 +28,7 @@ extends FormLayout {
     private TextField partid;
     private TextField name;
     private TextField parttype;
+    private TextArea remarks;
     private Button save;
     private Button delete;
     private Button cancel;
@@ -39,15 +41,17 @@ extends FormLayout {
         this.partid = new TextField("PartID");
         this.name = new TextField("Name");
         this.parttype = new TextField("Type");
+        remarks = new TextArea("Remarks");
         this.save = new Button("Save");
         this.delete = new Button("Delete");
         this.cancel = new Button("Cancel");
         this.save_cancel = new HorizontalLayout(new Component[]{this.save, this.cancel});
+        
         this.binder = new Binder<>(Parts.class);
         this.parts_view = parts_view;
         this.prepare_fields();
         this.partid.setEnabled(false);
-        this.addComponents(new Component[]{this.partid, this.name, this.parttype, this.save_cancel});
+        this.addComponents(new Component[]{this.partid, this.name, this.parttype, this.remarks, this.save_cancel});
         this.setVisible(false);
         this.save.setStyleName("primary");
         this.save.setClickShortcut(13, new int[0]);
@@ -60,16 +64,18 @@ extends FormLayout {
         this.partid = new TextField("PartID");
         this.name = new TextField("Name");
         this.parttype = new TextField("Type");
+        remarks = new TextArea("Remarks");
         this.save = new Button("Save");
         this.delete = new Button("Delete");
         this.cancel = new Button("Cancel");
         this.save_cancel = new HorizontalLayout(new Component[]{this.save, this.cancel});
+        
         this.binder = new Binder<>(Parts.class);
         this.parts_layout = parts_layout;
         TextField price = new TextField("Price");
         this.binder.bind(price, Parts::getPriceStr, Parts::setPrice);
         this.prepare_fields();
-        this.addComponents(new Component[]{this.partid, this.name, this.parttype, price, this.save_cancel});
+        this.addComponents(new Component[]{this.partid, this.name, this.parttype, price, this.remarks, this.save_cancel});
         this.setVisible(false);
         this.save.setStyleName("primary");
         this.save.setClickShortcut(13, new int[0]);
@@ -82,6 +88,7 @@ extends FormLayout {
         this.binder.bind(partid, Parts::getPartIDStr, Parts::setPartID);
         this.binder.bind(name, Parts::getName, Parts::setName);
         this.binder.bind(parttype, Parts::getPartType, Parts::setPartType);
+        binder.bind(remarks, Parts::getRemarks, Parts::setRemarks);
         this.binder.bindInstanceFields(this);
     }
 
@@ -139,12 +146,13 @@ extends FormLayout {
             System.out.println("Edit Existing Part");
             this.manager.disconnect();
             
-            String query = String.format("EditPart\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", 
+            String query = String.format("EditPart\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", 
             		this.old_part, 
             		String.valueOf(this.parts.getPartID()), 
             		this.parts.getName(), 
             		this.parts.getPartType(), 
             		this.parts.getStatus(), 
+            		this.parts.getRemarks(),
             		Float.valueOf(this.parts.getPrice()));
             
             this.manager.connect();
@@ -157,12 +165,13 @@ extends FormLayout {
             this.manager.disconnect();
             System.out.println("Add New Part");
             
-            String query = String.format("InsertNewPart\r\n%d\r\n%s\r\n%s\r\n%s", 
+            String query = String.format("InsertNewPart\r\n%d\r\n%s\r\n%s\r\n%s\r\n%s", 
             		this.parts.getPartID(), 
             		this.parts.getName(), 
             		this.parts.getPartType(), 
+            		this.parts.getRemarks(),
             		Float.valueOf(this.parts.getPrice()));
-            System.out.println(String.valueOf(query) + "\r\nnothing follows");
+            //System.out.println(String.valueOf(query) + "\r\nnothing follows");
             
             this.manager.connect();
             String result = this.manager.send(query);
