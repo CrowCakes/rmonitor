@@ -141,6 +141,10 @@ extends FormLayout {
         Boolean test2 = this.constructor.isPartExisting(this.manager, this.parts.getPartID());
         this.manager.disconnect();
         
+        String desc = this.parts.getRemarks().replace("\n", "").replace("\r", "").isEmpty() ? 
+        		"None" : 
+        			this.parts.getRemarks().replace("\n", "").replace("\r", "");
+        
         if (Integer.parseInt(this.old_part) == this.parts.getPartID() || 
         		Integer.parseInt(this.old_part) != 0 && this.parts.getPartID() != 0 && test1.booleanValue() && !test2.booleanValue()) {
             System.out.println("Edit Existing Part");
@@ -152,7 +156,7 @@ extends FormLayout {
             		this.parts.getName(), 
             		this.parts.getPartType(), 
             		this.parts.getStatus(), 
-            		this.parts.getRemarks(),
+            		desc,
             		Float.valueOf(this.parts.getPrice()));
             
             this.manager.connect();
@@ -169,7 +173,7 @@ extends FormLayout {
             		this.parts.getPartID(), 
             		this.parts.getName(), 
             		this.parts.getPartType(), 
-            		this.parts.getRemarks(),
+            		desc,
             		Float.valueOf(this.parts.getPrice()));
             //System.out.println(String.valueOf(query) + "\r\nnothing follows");
             

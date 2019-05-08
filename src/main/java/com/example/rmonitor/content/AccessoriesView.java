@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -228,9 +229,16 @@ implements View {
      * the filter's content.
      */
     private void updateList() {
+    	List<String> foo = Arrays.asList(filter.getValue().split("\\s*/\\s*"));
+		foo.replaceAll(string -> {
+			String temp = String.format(".*%s.*", string);
+			return temp;
+		});
+		String parameter = String.join("|", foo);
+    	
         List<Accessory> computers = new ArrayList<>();
         this.manager.connect();
-        computers = this.constructor.constructAccessories(this.manager, this.filter.getValue());
+        computers = this.constructor.constructAccessories(this.manager, parameter);
         this.manager.disconnect();
         this.display_accessories.setItems(computers);
     }

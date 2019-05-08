@@ -32,6 +32,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -243,13 +244,20 @@ implements View {
     }
 
     private void updateList() {
-        List<SmallAccessory> computers = new ArrayList<>();
+    	List<String> foo = Arrays.asList(filter.getValue().split("\\s*/\\s*"));
+		foo.replaceAll(string -> {
+			String temp = String.format(".*%s.*", string);
+			return temp;
+		});
+		String parameter = String.join("|", foo);
+    	
+        List<SmallAccessory> smallacc = new ArrayList<>();
         
         this.manager.connect();
-        computers = this.constructor.constructSmallAccessories(this.manager, this.filter.getValue());
+        smallacc = this.constructor.constructSmallAccessories(this.manager, parameter);
         this.manager.disconnect();
         
-        this.display_accessories.setItems(computers);
+        this.display_accessories.setItems(smallacc);
     }
 }
 

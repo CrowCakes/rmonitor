@@ -22,6 +22,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ComponentRenderer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.vaadin.dialogs.ConfirmDialog;
@@ -894,10 +895,17 @@ extends DeliveryFormLayout {
      * Refreshes the list of available Computers based on filter input.
      */
     private void updateList() {
+    	List<String> foo = Arrays.asList(filter.getValue().split("\\s*/\\s*"));
+		foo.replaceAll(string -> {
+			String temp = String.format(".*%s.*", string);
+			return temp;
+		});
+		String parameter = String.join("|", foo);
+    	
         List<Computer> computers = new ArrayList<>();
         this.manager.connect();
         try {
-            computers = this.constructor.constructComputers(this.manager, this.filter.getValue());
+            computers = this.constructor.constructComputers(this.manager, parameter);
             this.manager.disconnect();
             computers.removeAll(this.computers);
             this.available_computers.setItems(computers);
@@ -911,10 +919,17 @@ extends DeliveryFormLayout {
      * Refreshes the list of available Accessories based on filter input.
      */
     private void updateAccList() {
+    	List<String> foo = Arrays.asList(acc_filter.getValue().split("\\s*/\\s*"));
+		foo.replaceAll(string -> {
+			String temp = String.format(".*%s.*", string);
+			return temp;
+		});
+		String parameter = String.join("|", foo);
+    	
         List<Accessory> accessories = new ArrayList<>();
         this.manager.connect();
         try {
-            accessories = this.constructor.constructAccessories(this.manager, this.acc_filter.getValue());
+            accessories = this.constructor.constructAccessories(this.manager, parameter);
             this.manager.disconnect();
             accessories.removeAll(this.accessories);
             this.available_acc.setItems(accessories);

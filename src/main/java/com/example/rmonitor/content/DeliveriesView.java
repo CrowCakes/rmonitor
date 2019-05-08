@@ -211,7 +211,9 @@ implements View {
     private void updateList() {
         List<Delivery> parts = new ArrayList<>();
         this.manager.connect();
-        parts = DeliveriesView.isInteger((String)this.filter.getValue()) ? this.constructor.constructDeliveries(this.manager, Integer.parseInt(this.filter.getValue())) : this.constructor.constructDeliveries(this.manager, this.filter.getValue());
+        parts = DeliveriesView.isInteger((String)this.filter.getValue()) ? 
+        		this.constructor.constructDeliveries(this.manager, Integer.parseInt(this.filter.getValue())) : 
+        			this.constructor.constructDeliveries(this.manager, this.filter.getValue());
         this.manager.disconnect();
         
         // get the total price of the Delivery order

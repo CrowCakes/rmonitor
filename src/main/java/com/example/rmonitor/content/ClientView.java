@@ -44,6 +44,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ClientView
@@ -144,10 +145,17 @@ implements View {
      * Fetches the latest entries of Clients from the database based on filter input.
      */
     private void updateList() {
+    	List<String> foo = Arrays.asList(filter.getValue().split("\\s*/\\s*"));
+		foo.replaceAll(string -> {
+			String temp = String.format(".*%s.*", string);
+			return temp;
+		});
+		String parameter = String.join("|", foo);
+    	
         List<Client> clients = new ArrayList<>();
         this.manager.connect();
         try {
-            clients = this.constructor.filterClients(this.manager, this.filter.getValue());
+            clients = this.constructor.filterClients(this.manager, parameter);
             this.manager.disconnect();
             this.display_clients.setItems(clients);
         }

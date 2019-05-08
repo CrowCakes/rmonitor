@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.vaadin.viritin.button.DownloadButton;
@@ -248,9 +249,16 @@ implements View {
      * Fetches the latest entries from the database based on filter input.
      */
     private void updateList() {
+    	List<String> foo = Arrays.asList(filter.getValue().split("\\s*/\\s*"));
+		foo.replaceAll(string -> {
+			String temp = String.format(".*%s.*", string);
+			return temp;
+		});
+		String parameter = String.join("|", foo);
+    	
         List<Computer> computers = new ArrayList<>();
         this.manager.connect();
-        computers = this.constructor.constructComputers(this.manager, this.filter.getValue());
+        computers = this.constructor.constructComputers(this.manager, parameter);
         this.manager.disconnect();
         this.display_response.setItems(computers);
     }
