@@ -201,12 +201,12 @@ extends MainPageLayout {
             // empty catch block
         }
         
-        this.manager.connect();
-        Computer c = this.constructor.findComputer(this.manager, rental_number);
-        this.manager.disconnect();
+        //this.manager.connect();
+        //Computer c = this.constructor.findComputer(this.manager, rental_number);
+        //this.manager.disconnect();
         
         try {
-            this.rental_history_view = new RentalHistory(c);
+            this.rental_history_view = new RentalHistory(rental_number);
             this.rental_history_view.setHeight("500px");
             this.rental_history_view.setWidth("1000px");
             this.rental_history_layout.addComponent((Component)this.rental_history_view);

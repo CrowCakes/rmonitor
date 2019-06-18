@@ -10,6 +10,10 @@ import com.vaadin.data.Binder;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.vaadin.dialogs.ConfirmDialog;
 
 /*
@@ -128,28 +132,50 @@ extends ClientFormLayout {
         this.manager.connect();
         if (this.constructor.isClientExisting(this.manager, this.old_client.getName())) {
             this.manager.disconnect();
-            System.out.println("Edit Client");
+            /*System.out.println("Edit Client");
             String query = String.format("EditClient\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", 
             		this.old_client.getName(), 
             		this.client.getName(), 
             		this.client.getAddress(), 
             		this.client.getContact_person(), 
-            		this.client.getContact_numberStr());
+            		this.client.getContact_numberStr());*/
+            
+            List<String> parameters = new ArrayList<String>();
+            parameters.add(this.old_client.getName());
+            parameters.add(this.client.getName());
+            parameters.add(this.client.getAddress());
+            parameters.add(this.client.getContact_person());
+            parameters.add(this.client.getContact_numberStr());
+            
+            String query = constructor.constructMessage("EditClient", parameters);
+            
             this.manager.connect();
             String result = this.manager.send(query);
             this.manager.disconnect();
+            
             Notification.show((String)"Edit Client", (String)result, (Notification.Type)Notification.Type.HUMANIZED_MESSAGE);
         } else {
             this.manager.disconnect();
+            /*
             System.out.println("Insert New Client");
             String query = String.format("InsertNewClient\r\n%s\r\n%s\r\n%s\r\n%s", 
             		this.client.getName(), 
             		this.client.getAddress(), 
             		this.client.getContact_person(), 
-            		this.client.getContact_numberStr());
+            		this.client.getContact_numberStr());*/
+            
+            List<String> parameters = new ArrayList<String>();
+            parameters.add(this.client.getName());
+            parameters.add(this.client.getAddress());
+            parameters.add(this.client.getContact_person());
+            parameters.add(this.client.getContact_numberStr());
+            
+            String query = constructor.constructMessage("InsertNewClient", parameters);
+            
             this.manager.connect();
             String result = this.manager.send(query);
             this.manager.disconnect();
+            
             Notification.show((String)"Add New Client", (String)result, (Notification.Type)Notification.Type.HUMANIZED_MESSAGE);
         }
         this.client_view.clearSelection();

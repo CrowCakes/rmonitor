@@ -22,14 +22,14 @@ extends Panel {
     Label count = new Label("test");
     VerticalLayout layout = new VerticalLayout(new Component[]{this.count, this.grid});
 
-    public RentalHistory(Computer c) {
+    public RentalHistory(String c) {
         this.prepare_grid(c);
         this.grid.setSizeUndefined();
         this.layout.setSizeUndefined();
         this.setContent((Component)this.layout);
     }
 
-    private void prepare_grid(Computer c) {
+    private void prepare_grid(String c) {
         this.grid.addColumn(Delivery::getDeliveryID).setCaption("DeliveryID");
         this.grid.addColumn(Delivery::getcustomerName).setCaption("Client");
         this.grid.addColumn(Delivery::getReleaseDate).setCaption("Release Date");
@@ -49,7 +49,7 @@ extends Panel {
         List<Delivery> deliveries = new ArrayList<>();
         
         this.manager.connect();
-        deliveries = this.constructor.constructRentalUnitHistory(this.manager, c.getRentalNumber());
+        deliveries = this.constructor.constructRentalUnitHistory(this.manager, c);
         this.manager.disconnect();
         
         this.grid.setItems(deliveries);

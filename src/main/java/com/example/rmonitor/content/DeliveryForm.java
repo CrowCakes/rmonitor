@@ -329,6 +329,7 @@ extends DeliveryFormLayout {
 
     /***
      * Adds or modifies the selected Computer to the Delivery's list of Computers.
+     * This is a soft operation, so it does not actually affect the server database.
      * @param check - the operation to perform
      */
     private void addComputer(String check) {
@@ -369,6 +370,7 @@ extends DeliveryFormLayout {
 
     /***
      * Adds or modifies the selected Accessory to the Delivery's list of Accessories.
+     * This is a soft operation, so it does not actually affect the server database.
      * @param check - the operation to perform
      */
     private void addAcc(String check) {
@@ -408,6 +410,7 @@ extends DeliveryFormLayout {
 
     /***
      * Adds or modifies the selected Small Accessory to the Delivery's list of Small Accessories.
+     * This is a soft operation, so it does not actually affect the server database.
      * @param check - the operation to perform
      */
     private void addSmallAcc(String check) {
@@ -444,6 +447,7 @@ extends DeliveryFormLayout {
 
     /***
      * Removes the selected Computer from the form's list of Computers.
+     * This is a soft operation, so it does not actually affect the server database.
      */
     private void deleteComputer() {
         try {
@@ -464,6 +468,7 @@ extends DeliveryFormLayout {
 
     /***
      * Removes the selected Accessory from the form's list of Accessories.
+     * This is a soft operation, so it does not actually affect the server database.
      */
     private void deleteAcc() {
         try {
@@ -483,6 +488,7 @@ extends DeliveryFormLayout {
 
     /***
      * Removes the selected Small Accessory from the form's list of Small Accessories.
+     * This is a soft operation, so it does not actually affect the server database.
      */
     private void deleteSmallAcc() {
         try {
@@ -619,7 +625,7 @@ extends DeliveryFormLayout {
             this.manager.disconnect();
             System.out.println("Edit Delivery");
             
-            String base = String.format(
+            /*String base = String.format(
             		"EditDelivery\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%tF\r\n%tF\r\n%s\r\n%s\r\n%s\r\n%s", 
             		this.old_delv_id, 
             		this.delivery.getDeliveryIDStr(), 
@@ -633,7 +639,24 @@ extends DeliveryFormLayout {
             		this.delivery.getAccountManager(), 
             		this.delivery.getStatus(), 
             		this.delivery.getExtensionIDStr(), 
-            		this.delivery.getFrequency());
+            		this.delivery.getFrequency());*/
+            
+            List<String> parameters = new ArrayList<>();
+            parameters.add(this.old_delv_id);
+            parameters.add(this.delivery.getDeliveryIDStr());
+            parameters.add(this.delivery.getSO());
+            parameters.add(this.delivery.getSI());
+            parameters.add(this.delivery.getARD());
+            parameters.add(this.delivery.getPOS());
+            parameters.add(clientid.trim());
+            parameters.add(String.valueOf(this.delivery.getReleaseDate()));
+            parameters.add(String.valueOf(this.delivery.getDueDate()));
+            parameters.add(this.delivery.getAccountManager());
+            parameters.add(this.delivery.getStatus());
+            parameters.add(this.delivery.getExtensionIDStr());
+            parameters.add(String.valueOf(this.delivery.getFrequency()));
+            
+            String base = constructor.constructMessage("EditDelivery", parameters);
             
             this.manager.connect();
             String result = this.manager.send(base);
@@ -685,7 +708,7 @@ extends DeliveryFormLayout {
             this.manager.disconnect();
             System.out.println("Create New Delivery");
             
-            String base = String.format(
+            /*String base = String.format(
             		"InsertNewDelivery\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%tF\r\n%tF\r\n%s\r\n%s\r\n%s\r\n%s", 
             		this.delivery.getDeliveryIDStr(), 
             		this.delivery.getSO(), 
@@ -698,7 +721,23 @@ extends DeliveryFormLayout {
             		this.delivery.getAccountManager(), 
             		this.delivery.getStatus(), 
             		this.delivery.getExtensionIDStr(), 
-            		this.delivery.getFrequency());
+            		this.delivery.getFrequency());*/
+            
+            List<String> parameters = new ArrayList<>();
+            parameters.add(this.delivery.getDeliveryIDStr());
+            parameters.add(this.delivery.getSO());
+            parameters.add(this.delivery.getSI());
+            parameters.add(this.delivery.getARD());
+            parameters.add(this.delivery.getPOS());
+            parameters.add(clientid.trim());
+            parameters.add(String.valueOf(this.delivery.getReleaseDate()));
+            parameters.add(String.valueOf(this.delivery.getDueDate()));
+            parameters.add(this.delivery.getAccountManager());
+            parameters.add(this.delivery.getStatus());
+            parameters.add(this.delivery.getExtensionIDStr());
+            parameters.add(String.valueOf(this.delivery.getFrequency()));
+            
+            String base = constructor.constructMessage("InsertNewDelivery", parameters);
             
             String result = null;
             this.manager.connect();

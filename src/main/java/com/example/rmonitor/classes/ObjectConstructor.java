@@ -2153,4 +2153,30 @@ public class ObjectConstructor {
 		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("\n")));
 		return bar;
 	}
+
+	/**
+	 * Assembles a server-readable message containing the desired query to be run and a list of parameters
+	 * to insert into the query. An empty list may be passed if parameters are not needed.
+	 * @param query
+	 * @param parameters
+	 * @return
+	 */
+	public String constructMessage(String query, List<String> parameters) {
+		String result = "";
+		
+		result = result.concat(query.concat("\r\n"));
+
+		if (!parameters.isEmpty()) {
+			
+			for (String input : parameters) {
+				result = result.concat(input.concat("\r\n"));
+			}
+			
+		}
+		
+		//System.out.println("-- constructMessage --");
+		//System.out.println(result);
+		//System.out.println("-- nothing follows --");
+		return result;
+	}
 }

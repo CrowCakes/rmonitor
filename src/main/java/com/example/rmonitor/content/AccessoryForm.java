@@ -44,6 +44,10 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.vaadin.dialogs.ConfirmDialog;
 
 /*
@@ -212,25 +216,45 @@ extends FormLayout {
         Boolean test2 = this.constructor.isAccessoryExisting(this.manager, this.old_acc);
         this.manager.disconnect();
         if (this.acc.getRentalNumber() == this.old_acc || !this.old_acc.isEmpty() && !this.acc.getRentalNumber().isEmpty() && !test1.booleanValue() && test2.booleanValue()) {
-            String query = String.format("EditAccessory\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", 
+            /*String query = String.format("EditAccessory\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", 
             		this.old_acc, 
             		this.acc.getRentalNumber(), 
             		this.acc.getName(), 
             		this.acc.getAccessoryType(), 
-            		Float.valueOf(this.acc.getPrice()));
+            		Float.valueOf(this.acc.getPrice()));*/
+            
+            List<String> parameters = new ArrayList<String>();
+            parameters.add(this.old_acc);
+            parameters.add(this.acc.getRentalNumber());
+            parameters.add(this.acc.getName());
+            parameters.add(this.acc.getAccessoryType());
+            parameters.add(String.valueOf(Float.valueOf(this.acc.getPrice())));
+            
+            String query = constructor.constructMessage("EditAccessory", parameters);
+            
             this.manager.connect();
             String result = this.manager.send(query);
             this.manager.disconnect();
             Notification.show((String)"Edit Accessory", (String)result, (Notification.Type)Notification.Type.HUMANIZED_MESSAGE);
         } else {
-            String query = String.format("InsertNewRentalAccessory\r\n%s\r\n%s\r\n%s\r\n%s", 
+            /*String query = String.format("InsertNewRentalAccessory\r\n%s\r\n%s\r\n%s\r\n%s", 
             		this.acc.getRentalNumber(), 
             		this.acc.getName(), 
             		this.acc.getAccessoryType(), 
-            		Float.valueOf(this.acc.getPrice()));
+            		Float.valueOf(this.acc.getPrice()));*/
+        	
+        	List<String> parameters = new ArrayList<String>();
+            parameters.add(this.acc.getRentalNumber());
+            parameters.add(this.acc.getName());
+            parameters.add(this.acc.getAccessoryType());
+            parameters.add(String.valueOf(Float.valueOf(this.acc.getPrice())));
+            
+            String query = constructor.constructMessage("InsertNewRentalAccessory", parameters);
+        	
             this.manager.connect();
             String result = this.manager.send(query);
             this.manager.disconnect();
+            
             Notification.show((String)"Create New Accessory", (String)result, (Notification.Type)Notification.Type.HUMANIZED_MESSAGE);
         }
         this.setVisible(false);
@@ -284,111 +308,5 @@ extends FormLayout {
         }
         return Boolean.TRUE;
     }
-
-    /*
-    static HorizontalLayout access$0(AccessoryForm accessoryForm) {
-        return accessoryForm.save_cancel;
-    }
-
-    static Button access$1(AccessoryForm accessoryForm) {
-        return accessoryForm.delete;
-    }
-
-    static void access$2(AccessoryForm accessoryForm) {
-        accessoryForm.delete();
-    }
-
-    private static Object $deserializeLambda$(SerializedLambda serializedLambda) {
-        switch (serializedLambda.getImplMethodName()) {
-            case "getRentalNumber": 
-            case "getRentalNumber": {
-                if (serializedLambda.getImplMethodKind() == 5 && serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") && serializedLambda.getFunctionalInterfaceMethodName().equals("apply") && serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") && serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") && serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) {
-                    return Accessory::getRentalNumber;
-                }
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") || !serializedLambda.getFunctionalInterfaceMethodName().equals("apply") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") || !serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) break;
-                return Accessory::getRentalNumber;
-            }
-            case "setRentalNumber": 
-            case "setRentalNumber": {
-                if (serializedLambda.getImplMethodKind() == 5 && serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") && serializedLambda.getFunctionalInterfaceMethodName().equals("accept") && serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") && serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") && serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) {
-                    return Accessory::setRentalNumber;
-                }
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") || !serializedLambda.getFunctionalInterfaceMethodName().equals("accept") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") || !serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) break;
-                return Accessory::setRentalNumber;
-            }
-            case "getName": 
-            case "getName": {
-                if (serializedLambda.getImplMethodKind() == 5 && serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") && serializedLambda.getFunctionalInterfaceMethodName().equals("apply") && serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") && serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") && serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) {
-                    return Accessory::getName;
-                }
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") || !serializedLambda.getFunctionalInterfaceMethodName().equals("apply") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") || !serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) break;
-                return Accessory::getName;
-            }
-            case "setName": 
-            case "setName": {
-                if (serializedLambda.getImplMethodKind() == 5 && serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") && serializedLambda.getFunctionalInterfaceMethodName().equals("accept") && serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") && serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") && serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) {
-                    return Accessory::setName;
-                }
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") || !serializedLambda.getFunctionalInterfaceMethodName().equals("accept") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") || !serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) break;
-                return Accessory::setName;
-            }
-            case "getAccessoryType": 
-            case "getAccessoryType": {
-                if (serializedLambda.getImplMethodKind() == 5 && serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") && serializedLambda.getFunctionalInterfaceMethodName().equals("apply") && serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") && serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") && serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) {
-                    return Accessory::getAccessoryType;
-                }
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") || !serializedLambda.getFunctionalInterfaceMethodName().equals("apply") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") || !serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) break;
-                return Accessory::getAccessoryType;
-            }
-            case "setAccessoryType": 
-            case "setAccessoryType": {
-                if (serializedLambda.getImplMethodKind() == 5 && serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") && serializedLambda.getFunctionalInterfaceMethodName().equals("accept") && serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") && serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") && serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) {
-                    return Accessory::setAccessoryType;
-                }
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") || !serializedLambda.getFunctionalInterfaceMethodName().equals("accept") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") || !serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) break;
-                return Accessory::setAccessoryType;
-            }
-            case "getPriceStr": 
-            case "getPriceStr": {
-                if (serializedLambda.getImplMethodKind() == 5 && serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") && serializedLambda.getFunctionalInterfaceMethodName().equals("apply") && serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") && serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") && serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) {
-                    return Accessory::getPriceStr;
-                }
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/data/ValueProvider") || !serializedLambda.getFunctionalInterfaceMethodName().equals("apply") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;)Ljava/lang/Object;") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") || !serializedLambda.getImplMethodSignature().equals("()Ljava/lang/String;")) break;
-                return Accessory::getPriceStr;
-            }
-            case "setPrice": 
-            case "setPrice": {
-                if (serializedLambda.getImplMethodKind() == 5 && serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") && serializedLambda.getFunctionalInterfaceMethodName().equals("accept") && serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") && serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") && serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) {
-                    return Accessory::setPrice;
-                }
-                if (serializedLambda.getImplMethodKind() != 5 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/server/Setter") || !serializedLambda.getFunctionalInterfaceMethodName().equals("accept") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Ljava/lang/Object;Ljava/lang/Object;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/classes/Accessory") || !serializedLambda.getImplMethodSignature().equals("(Ljava/lang/String;)V")) break;
-                return Accessory::setPrice;
-            }
-            case "lambda$16": {
-                if (serializedLambda.getImplMethodKind() != 7 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/ui/Button$ClickListener") || !serializedLambda.getFunctionalInterfaceMethodName().equals("buttonClick") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/content/AccessoryForm") || !serializedLambda.getImplMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V")) break;
-                return (Button.ClickListener & java.io.Serializable)e -> {
-                    if (this.validate()) {
-                        this.save();
-                    } else {
-                        Notification.show((String)"Error", (String)"Something's wrong with the entered Accessory data.\r\nPlease check all the fields are entered.", (Notification.Type)Notification.Type.ERROR_MESSAGE);
-                    }
-                };
-            }
-            case "lambda$17": {
-                if (serializedLambda.getImplMethodKind() != 7 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/ui/Button$ClickListener") || !serializedLambda.getFunctionalInterfaceMethodName().equals("buttonClick") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/content/AccessoryForm") || !serializedLambda.getImplMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V")) break;
-                return (Button.ClickListener & java.io.Serializable)e -> {
-                    this.save_cancel.setVisible(false);
-                    this.delete.setVisible(false);
-                    ConfirmDialog.show((UI)this.getUI(), (String)"Confirmation", (String)"Are you sure you want to delete this Accessory?", (String)"Yes", (String)"No", (ConfirmDialog.Listener)new );
-                };
-            }
-            case "lambda$18": {
-                if (serializedLambda.getImplMethodKind() != 7 || !serializedLambda.getFunctionalInterfaceClass().equals("com/vaadin/ui/Button$ClickListener") || !serializedLambda.getFunctionalInterfaceMethodName().equals("buttonClick") || !serializedLambda.getFunctionalInterfaceMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V") || !serializedLambda.getImplClass().equals("com/example/rmonitor/content/AccessoryForm") || !serializedLambda.getImplMethodSignature().equals("(Lcom/vaadin/ui/Button$ClickEvent;)V")) break;
-                return (Button.ClickListener & java.io.Serializable)e -> this.cancel();
-            }
-        }
-        throw new IllegalArgumentException("Invalid lambda deserialization");
-    }
-    */
 }
 

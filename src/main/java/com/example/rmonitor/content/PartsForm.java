@@ -15,6 +15,10 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.vaadin.dialogs.ConfirmDialog;
 
 public class PartsForm
@@ -147,9 +151,10 @@ extends FormLayout {
         
         if (Integer.parseInt(this.old_part) == this.parts.getPartID() || 
         		Integer.parseInt(this.old_part) != 0 && this.parts.getPartID() != 0 && test1.booleanValue() && !test2.booleanValue()) {
-            System.out.println("Edit Existing Part");
+            //System.out.println("Edit Existing Part");
             this.manager.disconnect();
             
+            /*
             String query = String.format("EditPart\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", 
             		this.old_part, 
             		String.valueOf(this.parts.getPartID()), 
@@ -157,7 +162,18 @@ extends FormLayout {
             		this.parts.getPartType(), 
             		this.parts.getStatus(), 
             		desc,
-            		Float.valueOf(this.parts.getPrice()));
+            		Float.valueOf(this.parts.getPrice()));*/
+            
+            List<String> parameters = new ArrayList<String>();
+            parameters.add(this.old_part);
+            parameters.add(String.valueOf(this.parts.getPartID()));
+            parameters.add(this.parts.getName());
+            parameters.add(this.parts.getPartType());
+            parameters.add(this.parts.getStatus());
+            parameters.add(desc);
+            parameters.add(String.valueOf(Float.valueOf(this.parts.getPrice())));
+            
+            String query = constructor.constructMessage("EditPart", parameters);
             
             this.manager.connect();
             String result = this.manager.send(query);
@@ -167,15 +183,23 @@ extends FormLayout {
         } 
         else {
             this.manager.disconnect();
-            System.out.println("Add New Part");
-            
+            //System.out.println("Add New Part");
+            /*
             String query = String.format("InsertNewPart\r\n%d\r\n%s\r\n%s\r\n%s\r\n%s", 
             		this.parts.getPartID(), 
             		this.parts.getName(), 
             		this.parts.getPartType(), 
             		desc,
-            		Float.valueOf(this.parts.getPrice()));
-            //System.out.println(String.valueOf(query) + "\r\nnothing follows");
+            		Float.valueOf(this.parts.getPrice()));*/
+            
+            List<String> parameters = new ArrayList<String>();
+            parameters.add(String.valueOf(this.parts.getPartID()));
+            parameters.add(this.parts.getName());
+            parameters.add(this.parts.getPartType());
+            parameters.add(desc);
+            parameters.add(String.valueOf(Float.valueOf(this.parts.getPrice())));
+            
+            String query = constructor.constructMessage("InsertNewPart", parameters);
             
             this.manager.connect();
             String result = this.manager.send(query);

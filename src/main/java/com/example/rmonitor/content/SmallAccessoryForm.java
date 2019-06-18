@@ -42,6 +42,10 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.vaadin.dialogs.ConfirmDialog;
 
 /*
@@ -139,17 +143,47 @@ extends FormLayout {
         this.manager.connect();
         if (!this.old_acc.isEmpty() && !this.small_acc.getName().isEmpty()) {
             this.manager.disconnect();
-            String query = String.format("EditSmallAccessory\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", this.old_acc, this.old_acc_type, this.small_acc.getName(), this.small_acc.getAccessoryType(), Float.valueOf(this.small_acc.getPrice()), this.small_acc.getQuantity(), this.small_acc.getQuantityMinus());
+            //String query = String.format(
+            //"EditSmallAccessory\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", 
+            //this.old_acc, this.old_acc_type, this.small_acc.getName(), 
+            //this.small_acc.getAccessoryType(), Float.valueOf(this.small_acc.getPrice())), 
+            //this.small_acc.getQuantity(), this.small_acc.getQuantityMinus());
+            
+            List<String> parameters = new ArrayList<String>();
+            parameters.add(this.old_acc);
+            parameters.add(this.old_acc_type);
+            parameters.add(this.small_acc.getName());
+            parameters.add(this.small_acc.getAccessoryType());
+            parameters.add(String.valueOf(Float.valueOf(this.small_acc.getPrice())));
+            parameters.add(String.valueOf(this.small_acc.getQuantity()));
+            parameters.add(String.valueOf(this.small_acc.getQuantityMinus()));
+            
+            String query = constructor.constructMessage("EditSmallAccessory", parameters);
+            
             this.manager.connect();
             String result = this.manager.send(query);
             this.manager.disconnect();
+            
             Notification.show((String)"Edit Accessory", (String)result, (Notification.Type)Notification.Type.HUMANIZED_MESSAGE);
         } else {
             this.manager.disconnect();
-            String query = String.format("InsertNewSmallAccessory\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", this.small_acc.getName(), this.small_acc.getAccessoryType(), 0, this.small_acc.getQuantity(), 0);
+            //String query = String.format(
+            //"InsertNewSmallAccessory\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", 
+            //this.small_acc.getName(), this.small_acc.getAccessoryType(), 0, this.small_acc.getQuantity(), 0);
+            
+            List<String> parameters = new ArrayList<String>();
+            parameters.add(this.small_acc.getName());
+            parameters.add(this.small_acc.getAccessoryType());
+            parameters.add(String.valueOf(0));
+            parameters.add(String.valueOf(this.small_acc.getQuantity()));
+            parameters.add(String.valueOf(0));
+            
+            String query = constructor.constructMessage("InsertNewSmallAccessory", parameters);
+            
             this.manager.connect();
             String result = this.manager.send(query);
             this.manager.disconnect();
+            
             Notification.show((String)"Create New Accessory", (String)result, (Notification.Type)Notification.Type.HUMANIZED_MESSAGE);
         }
         this.view.clearSelection();

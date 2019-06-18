@@ -1,5 +1,6 @@
 package com.example.rmonitor.content;
 
+import com.example.rmonitor.access.CurrentUser;
 import com.example.rmonitor.layouts.AccessoryLayout;
 import com.example.rmonitor.layouts.ComputerLayout;
 import com.example.rmonitor.layouts.PartsLayout;
@@ -20,17 +21,19 @@ implements View {
     VerticalLayout comp = new ComputerLayout();
 
     public AssetManagement() {
-        this.addComponent((Component)this.layout);
-        this.tabsheet.addTab((Component)this.parts, "Parts");
-        this.tabsheet.addTab((Component)this.acc, "Accessories");
-        this.tabsheet.addTab((Component)this.comp, "Computers");
-        this.tabsheet.setSizeUndefined();
-        this.tabsheet.setHeight("650px");
-        this.tabsheet.setWidth("1050px");
-        this.layout.addComponent((Component)this.tabsheet);
-        this.layout.setSizeUndefined();
-        this.layout.setHeight("100%");
-        this.layout.setWidth("100%");
+        if (CurrentUser.get().equals("Super")) {
+        	this.addComponent((Component)this.layout);
+            this.tabsheet.addTab((Component)this.parts, "Parts");
+            this.tabsheet.addTab((Component)this.acc, "Accessories");
+            this.tabsheet.addTab((Component)this.comp, "Computers");
+            this.tabsheet.setSizeUndefined();
+            this.tabsheet.setHeight("650px");
+            this.tabsheet.setWidth("1050px");
+            this.layout.addComponent((Component)this.tabsheet);
+            this.layout.setSizeUndefined();
+            this.layout.setHeight("100%");
+            this.layout.setWidth("100%");
+        }
     }
 }
 

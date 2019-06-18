@@ -257,6 +257,7 @@ extends ComputerFormLayout {
 
     /***
      * Removes the selected Part from the Computer.
+     * This is a soft operation, so it does not actually affect the server database.
      */
     private void deletePart() {
         try {
@@ -292,6 +293,7 @@ extends ComputerFormLayout {
 
     /***
      * Adds or changes a Part belonging to the Computer.
+     * This is a soft operation, so it does not actually affect the server database.
      * @param check - string denoting which operation to perform
      */
     private void addParts(String check) {
@@ -455,6 +457,7 @@ extends ComputerFormLayout {
         this.manager.connect();
         Boolean test2 = this.constructor.isComputerExisting(this.manager, this.comp.getRentalNumber());
         this.manager.disconnect();
+        
         if (this.old_rental == this.comp.getRentalNumber() || test1.booleanValue() && !test2.booleanValue() || this.isPartsEdited() == "True") {
             int x;
             ArrayList<String> foo = new ArrayList<String>();
@@ -464,7 +467,9 @@ extends ComputerFormLayout {
             bar = this.constructor.findListIDs(this.manager, this.old_rental);
             this.manager.disconnect();
             
-            String desc = this.comp.getDescription().replace("\n", "").replace("\r", "").isEmpty() ? "None" : this.comp.getDescription().replace("\n", "").replace("\r", "");
+            String desc = this.comp.getDescription().replace("\n", "").replace("\r", "").isEmpty() ? 
+            		"n/a" : this.comp.getDescription().replace("\n", "").replace("\r", "");
+            /*
             String base = String.format("EditComputer\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%tF\r\n%s\r\n%s\r\n%s\r\n", 
             		this.old_rental, 
             		this.comp.getRentalNumber(), 
@@ -474,7 +479,20 @@ extends ComputerFormLayout {
             		this.comp.getPurchaseDate(), 
             		this.isPartsEdited(), 
             		Float.valueOf(this.comp.getPrice()), 
-            		desc);
+            		desc);*/
+            
+            List<String> parameters = new ArrayList<>();
+            parameters.add(this.old_rental);
+            parameters.add(this.comp.getRentalNumber());
+            parameters.add(this.comp.getCpu());
+            parameters.add(this.comp.getPcType());
+            parameters.add(this.comp.getOs());
+            parameters.add(String.valueOf(this.comp.getPurchaseDate()));
+            parameters.add(this.isPartsEdited());
+            parameters.add(String.valueOf(Float.valueOf(this.comp.getPrice())));
+            parameters.add(desc);
+            
+            String base = constructor.constructMessage("EditComputer", parameters);
             
             StringBuilder query = new StringBuilder(base);
             
@@ -511,8 +529,10 @@ extends ComputerFormLayout {
             Notification.show((String)"Edit Computer", (String)result, (Notification.Type)Notification.Type.HUMANIZED_MESSAGE);
         } 
         else {
-            String desc = this.comp.getDescription().replace("\n", "").replace("\r", "").isEmpty() ? "None" : this.comp.getDescription().replace("\n", "").replace("\r", "");
-            String base = String.format("InsertNewRentalComputer\r\n%s\r\n%s\r\n%s\r\n%s\r\n%tF\r\n%s\r\n%s\r\n%s\r\n", 
+            String desc = this.comp.getDescription().replace("\n", "").replace("\r", "").isEmpty() ? 
+            		"None" : this.comp.getDescription().replace("\n", "").replace("\r", "");
+            
+            /*String base = String.format("InsertNewRentalComputer\r\n%s\r\n%s\r\n%s\r\n%s\r\n%tF\r\n%s\r\n%s\r\n%s\r\n", 
             		this.comp.getRentalNumber(), 
             		this.comp.getCpu(), 
             		this.comp.getPcType(), 
@@ -520,7 +540,19 @@ extends ComputerFormLayout {
             		this.comp.getPurchaseDate(), 
             		this.isPartsEdited(), 
             		Float.valueOf(this.comp.getPrice()), 
-            		desc);
+            		desc);*/
+            
+            List<String> parameters = new ArrayList<>();
+            parameters.add(this.comp.getRentalNumber());
+            parameters.add(this.comp.getCpu());
+            parameters.add(this.comp.getPcType());
+            parameters.add(this.comp.getOs());
+            parameters.add(String.valueOf(this.comp.getPurchaseDate()));
+            parameters.add(this.isPartsEdited());
+            parameters.add(String.valueOf(Float.valueOf(this.comp.getPrice())));
+            parameters.add(desc);
+            
+            String base = constructor.constructMessage("InsertNewRentalComputer", parameters);
             
             StringBuilder query = new StringBuilder(base);
             
