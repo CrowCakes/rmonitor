@@ -546,9 +546,7 @@ public class ObjectConstructor {
 	private List<Delivery> parseDelivery(String foo) {
 		List<Delivery> parsed_data = new ArrayList<>();
 		
-		/** split the response by newline, making a list of strings containing the information
-		 * of a single computer
-		 * */
+		/* split the response by newline */
 		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
 		
 		//Parse the string containing the details of the Part
@@ -595,6 +593,55 @@ public class ObjectConstructor {
 		}
 		
 		return parsed_data;
+	}
+	
+	private Delivery parseLastInsertedDelivery(String foo) {
+		List<Delivery> parsed_data = new ArrayList<>();
+		
+		/* split the response by newline */
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		
+		//Parse the string containing the details of the Part
+		List<String> foobar;
+		String so, si, ard, pos; int extension, freq;
+		for (int i=bar.size()-1; i < bar.size(); i = i + 1) {
+			foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
+			so = foobar.get(2);
+			si = foobar.get(3);
+			ard = foobar.get(4);
+			pos = foobar.get(5);
+				
+				try {
+					extension = Integer.parseInt(foobar.get(10));
+				} catch (NumberFormatException ex) {
+					extension = 0;
+				}
+				try {
+					freq = Integer.parseInt(foobar.get(11));
+				}
+				catch (NumberFormatException ex) {
+					freq = 0;
+				}
+				
+				parsed_data.add(new Delivery(
+						Integer.parseInt(foobar.get(0)), 
+						so, 
+						si, 
+						ard, 
+						pos, 
+						foobar.get(1), 
+						Date.valueOf(foobar.get(6)), 
+						Date.valueOf(foobar.get(7)), 
+						foobar.get(8), 
+						foobar.get(9), 
+						extension,
+						freq
+						)
+						);
+
+		}
+		
+		return parsed_data.get(0);
 	}
 	
 	/***
@@ -776,6 +823,55 @@ public class ObjectConstructor {
 						)
 						);
 
+		}
+		
+		return parsed_data;
+	}
+	
+	/**
+	 * Construct a List of Integers (ExtensionIDs) that form a chain of extended Deliveries, 
+	 * starting from delvID.
+	 * @param foo
+	 * @param delvID
+	 * @return
+	 */
+	private List<Integer> parseDeliveryExt(String foo, int delvID) {
+		int ext = delvID;
+		List<Integer> parsed_data = new ArrayList<>();
+		
+		List<String> bar = new ArrayList<String>(Arrays.asList(foo.split("::\n")));
+		
+		//Parse the string containing the details of the Part
+		List<String> foobar;
+		int extension;
+		
+		//loop over and over until end of chain is reached
+		Boolean isBreak = false;
+		while (!isBreak) {
+			for (int i=0; i < bar.size(); i = i + 1) {
+				foobar = new ArrayList<>(Arrays.asList(bar.get(i).split("\\s*::,\\s*")));
+				if (foobar.size() == 1) {
+					return new ArrayList<>();
+				}
+
+				try {
+					extension = Integer.parseInt(foobar.get(10));
+				} catch (NumberFormatException ex) {
+					extension = 0;
+				}
+
+				if (extension == ext) {
+					parsed_data.add(Integer.parseInt(foobar.get(0)));
+					ext = Integer.parseInt(foobar.get(0));
+					//start over from the top
+					break;
+					}
+				else {
+					//found no more matches
+					if (i == bar.size() - 1) isBreak = true;
+					continue;
+				}
+			}
 		}
 		
 		return parsed_data;
@@ -1351,6 +1447,15 @@ public class ObjectConstructor {
 		return parsed_data;
 	}
 	
+	public Delivery constructLastInsertedDelivery(ConnectionManager manager) {
+		//query the information from database
+		String foo = new String(manager.send("ViewDeliveries"));
+		
+		Delivery parsed_data = parseLastInsertedDelivery(foo);
+		
+		return parsed_data;
+	}
+	
 	/**
 	 * Create the list of Deliveries by first requesting for the Deliveries 
 	 * that match the user-input Delivery ID 
@@ -1558,6 +1663,23 @@ public class ObjectConstructor {
 		return parsed_data.get(0);
 	}
 	
+	/**
+	 * Attempts to find any parent Deliveries whose extended Delivery has the specified DeliveryID.
+	 * @param manager
+	 * @param delvID
+	 * @return A list of DeliveryIDs whose ExtensionID matches delvID
+	 */
+	public List<Integer> findExtendedParentDelivery(ConnectionManager manager, int delvID) {
+		List<Integer> parsed_data = new ArrayList<>();
+		
+		//query the information from database
+		String foo = new String(manager.send("ViewDeliveries"));
+		
+		parsed_data = parseDeliveryExt(foo, delvID);
+		
+		return parsed_data;
+	}
+
 	/**
 	 * Constructs the list of Clients by querying the database, then parsing
 	 * the result of the query.

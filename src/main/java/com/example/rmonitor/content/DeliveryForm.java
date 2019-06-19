@@ -741,10 +741,22 @@ extends DeliveryFormLayout {
             
             String result = null;
             this.manager.connect();
-            //this will return 
-            int last_insert_id = Integer.parseInt(this.manager.send(base).trim());
+            //get the deliveryID that was generated for this delivery
+            String next_increment = this.manager.send(base).trim();
             this.manager.disconnect();
             
+            int last_insert_id;
+            try {
+            	last_insert_id = Integer.parseInt(next_increment.trim());
+            }
+            catch (NumberFormatException ex) {
+            	//in case a connection reset occurs
+            	manager.connect();
+            	last_insert_id = constructor.constructLastInsertedDelivery(manager).getDeliveryID();
+            	manager.disconnect();
+            }
+            
+            //insert the units
             ArrayList<String> unique_computers = new ArrayList<String>();
             for (int i = 0; i < this.computers.size(); ++i) {
                 if (unique_computers.contains(((Computer)this.computers.get(i)).getRentalNumber())) continue;

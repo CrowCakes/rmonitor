@@ -428,10 +428,22 @@ extends PullFormLayout {
         this.manager.disconnect();
         
         if (foo.isEmpty() && bar.isEmpty()) {
+        	//get parents of current delivery if any
+        	this.manager.connect();
+        	List<Integer> parents = constructor.findExtendedParentDelivery(manager, this.current_delivery);
+        	this.manager.disconnect();
+        	
             this.manager.connect();
             query = String.format("CompleteDelivery\r\n%s", this.current_delivery);
             computers = this.manager.send(query);
             this.manager.disconnect();
+            
+            for (int id : parents) {
+            	this.manager.connect();
+                query = String.format("CompleteDelivery\r\n%s", id);
+                computers = this.manager.send(query);
+                this.manager.disconnect();
+            }
         }
         
         this.back();
