@@ -73,7 +73,7 @@ extends Panel {
         VerticalLayout foo = new VerticalLayout();
         Label name = new Label(String.format("Client: %s", c.getName()));
         Label address = new Label(String.format("Address: %s", c.getAddress()));
-        Label contact_num = new Label(String.format("Contact#: %s", c.getContact_numberStr()));
+        Label contact_num = new Label(String.format("Contact#: %s", c.getContact_number()));
         Label contactp = new Label(String.format("Contact: %s", c.getContact_person()));
         foo.addComponents(new Component[]{new HorizontalLayout(new Component[]{name, address}), new HorizontalLayout(new Component[]{contact_num, contactp})});
         foo.setSizeUndefined();

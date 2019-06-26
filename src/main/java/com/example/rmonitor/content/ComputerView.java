@@ -9,6 +9,7 @@ import com.example.rmonitor.classes.ReportGenerator;
 import com.example.rmonitor.content.ComputerForm;
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ValueChangeMode;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -47,7 +48,7 @@ implements View {
     HorizontalLayout grid_row;
     
     HorizontalLayout layout = new HorizontalLayout();
-    VerticalLayout cpuFilter = new VerticalLayout();
+    HorizontalLayout cpuFilter = new HorizontalLayout();
     VerticalLayout main = new VerticalLayout();
     
     int MAX_LIMIT = 20;
@@ -218,6 +219,7 @@ implements View {
         this.display_response.addColumn(Computer::getPcType).setCaption("PCType");
         this.display_response.addColumn(Computer::getOs).setCaption("OS");
         this.display_response.addColumn(Computer::getPurchaseDate).setCaption("Purchase Date");
+        this.display_response.addColumn(Computer::getHistory_count).setCaption("# of Releases");
         this.display_response.addColumn(Computer::getIsUpgraded).setCaption("Upgraded?");
         this.display_response.addColumn(Computer::getStatus).setCaption("Status");
         this.display_response.addColumn(Computer::getDescription).setCaption("Remarks");
@@ -279,17 +281,42 @@ implements View {
         this.manager.connect();
         computers = this.constructor.constructComputers(this.manager, offset, limit);
         this.manager.disconnect();
+        
+        for (Computer computer : computers) {
+        	manager.connect();
+        	computer.setHistory_count(
+        			constructor.constructRentalUnitHistory(manager, computer.getRentalNumber()).size()
+        			);
+        	manager.disconnect();
+        }
         this.display_response.setItems(computers);
+        
+        this.cpuFilter.removeAllComponents();
+        this.cpuFilter.addComponents(new VerticalLayout(), new VerticalLayout());
         
         this.manager.connect();
         List<String> cpus = this.constructor.parseRawString(this.manager.send("ViewCPUQty"));
         this.manager.disconnect();
         
-        this.cpuFilter.removeAllComponents();
-        this.cpuFilter.addComponent((Component)new Label("Count of Units by CPU type:"));
+        ((VerticalLayout) this.cpuFilter.getComponent(0))
+        	.addComponent((Component)new Label("Count of On-Hand Units by CPU type:"));
         for (String text : cpus) {
-            this.cpuFilter.addComponent((Component)new Label(text));
+        	((VerticalLayout) this.cpuFilter.getComponent(0))
+        		.addComponent((Component)new Label(text));
         }
+        
+        this.manager.connect();
+        cpus = this.constructor.parseRawString(this.manager.send("ViewCPUQtyUnavailable"));
+        this.manager.disconnect();
+        
+        ((VerticalLayout) this.cpuFilter.getComponent(1))
+        	.addComponent((Component)new Label("Count of Unavailable Units by CPU type:"));
+        for (String text : cpus) {
+        	((VerticalLayout) this.cpuFilter.getComponent(1))
+        		.addComponent((Component)new Label(text));
+        }
+        
+        
         display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
         limit = MAX_LIMIT;
     }

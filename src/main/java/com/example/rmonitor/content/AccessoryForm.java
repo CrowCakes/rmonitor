@@ -42,6 +42,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 
@@ -65,6 +66,7 @@ extends FormLayout {
     private TextField name;
     private TextField acctype;
     private TextField price;
+    private TextArea remarks;
     private Button save;
     private Button delete;
     private Button cancel;
@@ -78,18 +80,23 @@ extends FormLayout {
     public AccessoryForm(AccessoriesView acc_view) {
         this.manager = new ConnectionManager();
         this.constructor = new ObjectConstructor();
+        
         this.rn = new TextField("Rental Asset#");
         this.name = new TextField("Name");
         this.acctype = new TextField("Type");
         this.price = new TextField("Price");
+        this.remarks = new TextArea("Remarks");
+        
         this.save = new Button("Save");
         this.delete = new Button("Delete");
         this.cancel = new Button("Cancel");
+        
         this.save_cancel = new HorizontalLayout(new Component[]{this.save, this.cancel});
+        
         this.binder = new Binder<>(Accessory.class);
         this.acc_view = acc_view;
         this.prepare_fields();
-        this.addComponents(new Component[]{this.rn, this.name, this.acctype, this.save_cancel});
+        this.addComponents(new Component[]{this.rn, this.name, this.acctype, this.remarks, this.save_cancel});
         this.setVisible(false);
         this.save.setStyleName("primary");
         this.save.setClickShortcut(13, new int[0]);
@@ -212,9 +219,15 @@ extends FormLayout {
         this.manager.connect();
         Boolean test1 = this.constructor.isAccessoryExisting(this.manager, this.acc.getRentalNumber());
         this.manager.disconnect();
+        
         this.manager.connect();
         Boolean test2 = this.constructor.isAccessoryExisting(this.manager, this.old_acc);
         this.manager.disconnect();
+        
+        String desc = this.acc.getRemarks().replace("\n", "").replace("\r", "").isEmpty() ? 
+        		"n/a" : 
+        			this.acc.getRemarks().replace("\n", "").replace("\r", "");
+        
         if (this.acc.getRentalNumber() == this.old_acc || !this.old_acc.isEmpty() && !this.acc.getRentalNumber().isEmpty() && !test1.booleanValue() && test2.booleanValue()) {
             /*String query = String.format("EditAccessory\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s", 
             		this.old_acc, 
@@ -228,6 +241,7 @@ extends FormLayout {
             parameters.add(this.acc.getRentalNumber());
             parameters.add(this.acc.getName());
             parameters.add(this.acc.getAccessoryType());
+            parameters.add(desc);
             parameters.add(String.valueOf(Float.valueOf(this.acc.getPrice())));
             
             String query = constructor.constructMessage("EditAccessory", parameters);
@@ -247,6 +261,7 @@ extends FormLayout {
             parameters.add(this.acc.getRentalNumber());
             parameters.add(this.acc.getName());
             parameters.add(this.acc.getAccessoryType());
+            parameters.add(desc);
             parameters.add(String.valueOf(Float.valueOf(this.acc.getPrice())));
             
             String query = constructor.constructMessage("InsertNewRentalAccessory", parameters);

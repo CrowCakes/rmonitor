@@ -54,10 +54,20 @@ extends ComputerFormLayout {
         this.binder = new Binder<>(Computer.class);
         this.reset_flag = false;
         this.comp_view = comp_view;
+        
         this.setup_buttons();
         this.setup_grid();
+        
         VerticalLayout main_column = new VerticalLayout();
-        main_column.addComponents(new Component[]{new HorizontalLayout(new Component[]{new FormLayout(new Component[]{this.rn, this.cpu, this.pctype, this.os, this.pur}), new FormLayout(new Component[]{this.status, this.parent_delivery})}), this.parts_menu, this.save_cancel});
+        main_column.addComponents(
+        		new Component[]{
+        				new HorizontalLayout(
+        						new Component[]{
+        								new FormLayout(
+        										new Component[]{this.rn, this.cpu, this.pctype, this.os, this.pur}), 
+        								new FormLayout(new Component[]{this.status, this.history_count, this.parent_delivery})}), 
+        				this.parts_menu, 
+        				this.save_cancel});
         HorizontalLayout final_form = new HorizontalLayout(new Component[]{main_column, new VerticalLayout(new Component[]{this.description, this.select_menu})});
         Panel panel = new Panel((Component)final_form);
         panel.setHeight("650px");
@@ -86,7 +96,14 @@ extends ComputerFormLayout {
         this.setup_buttons();
         this.setup_grid();
         VerticalLayout main_column = new VerticalLayout();
-        main_column.addComponents(new Component[]{new HorizontalLayout(new Component[]{new FormLayout(new Component[]{this.rn, this.cpu, this.pctype, this.os, this.pur}), new FormLayout(new Component[]{this.status})}), this.parts_menu, this.save_cancel});
+        main_column.addComponents(
+        		new Component[]{
+        				new HorizontalLayout(
+        						new Component[]{
+        								new FormLayout(new Component[]{this.rn, this.cpu, this.pctype, this.os, this.pur}), 
+        								new FormLayout(new Component[]{this.status, this.history_count, this.parent_delivery})}), 
+        				this.parts_menu, 
+        				this.save_cancel});
         HorizontalLayout final_form = new HorizontalLayout(new Component[]{main_column, new VerticalLayout(new Component[]{this.description, this.select_menu})});
         Panel panel = new Panel((Component)final_form);
         panel.setHeight("650px");
@@ -380,9 +397,32 @@ extends ComputerFormLayout {
         this.old_rental = comp.getRentalNumber();
         this.parts.clear();
         this.old_parts.clear();
+        
+        //get the full Parts data belonging to the Computer
         for (int i = 0; i < comp.getPartIDs().size(); ++i) {
             this.manager.connect();
             List<Parts> foo = this.constructor.fetchParts(this.manager, ((Integer)comp.getPartIDs().get(i)).intValue());
+            
+            //make sure not to include 1
+            for (Parts x : parts) {
+                if (x.getPartID() > 1) {
+                	String query = String.format("TraceComputer\r\n%s", x.getPartID());
+                    
+                    this.manager.connect();
+                    String parent = this.manager.send(query).trim();
+                    parent = parent.replace(":", "");
+                    this.manager.disconnect();
+                    
+                    x.setParent(parent);
+                    
+                    manager.connect();
+                    parent = constructor.findOriginalComputer(manager, x.getPartID()).getRentalNumber();
+                    manager.disconnect();
+                    
+                    x.setOriginalParent(parent);
+                }
+            }
+            
             this.parts.addAll(foo);
             this.old_parts.addAll(foo);
             this.manager.disconnect();
@@ -395,6 +435,14 @@ extends ComputerFormLayout {
             this.display_computers_parts.setItems(Collections.emptyList());
             this.display_computers_parts.setItems(this.parts);
         }
+        
+        manager.connect();
+        this.history_count.setValue(
+        		String.format("Number of times released: %d times", 
+        				constructor.constructRentalUnitHistory(manager, comp.getRentalNumber()).size())
+        		);
+        manager.disconnect();
+        
         this.binder.setBean(comp);
         this.delete.setVisible(false);
         this.setVisible(true);
@@ -407,10 +455,12 @@ extends ComputerFormLayout {
         this.manager.connect();
         List<Parts> foo = this.constructor.fetchOriginalParts(this.manager, this.old_rental);
         this.manager.disconnect();
+        
         this.reset_flag = true;
         this.parts = foo;
-        this.display_computers_parts.setItems(this.parts);
+
         this.refreshRentalParts();
+        this.display_computers_parts.setItems(this.parts);
         this.price.setValue(this.parts_price_sum());
     }
 
@@ -585,13 +635,33 @@ extends ComputerFormLayout {
      * Fetches the latest list of available Parts from the database, then displays them in the Part selection menu.
      */
     private void updateList() {
-        List<Parts> computers = new ArrayList<>();
+        List<Parts> parts = new ArrayList<>();
         this.manager.connect();
         try {
-            computers = this.constructor.filterAvailableParts(this.manager, this.filter.getValue());
+            parts = this.constructor.filterAvailableParts(this.manager, this.filter.getValue());
             this.manager.disconnect();
-            computers.removeAll(this.parts);
-            this.available_parts.setItems(computers);
+            
+            for (Parts x: parts) {
+            	if (x.getPartID() > 1) {
+            		String query = String.format("TraceComputer\r\n%s", x.getPartID());
+                    
+                    this.manager.connect();
+                    String parent = this.manager.send(query).trim();
+                    parent = parent.replace(":", "");
+                    this.manager.disconnect();
+                    
+                    x.setParent(parent);
+                    
+                    manager.connect();
+                    parent = constructor.findOriginalComputer(manager, x.getPartID()).getRentalNumber();
+                    manager.disconnect();
+                    
+                    x.setOriginalParent(parent);
+            	}
+            }
+            
+            parts.removeAll(this.parts);
+            this.available_parts.setItems(parts);
         }
         catch (NumberFormatException ex) {
             this.manager.disconnect();

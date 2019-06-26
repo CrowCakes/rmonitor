@@ -5,9 +5,9 @@ public class Client {
 	String name;
 	String address;
 	String contact_person;
-	long contact_number;
+	String contact_number;
 	
-	public Client(int clientid, String name, String address, String contact_person, long contact_number) {
+	public Client(int clientid, String name, String address, String contact_person, String contact_number) {
 		this.clientid = clientid;
 		this.name = name;
 		this.address = address;
@@ -47,20 +47,12 @@ public class Client {
 		this.contact_person = contact_person;
 	}
 
-	public long getContact_number() {
+	public String getContact_number() {
 		return contact_number;
 	}
 
-	public void setContact_number(long contact_number) {
-		this.contact_number = contact_number;
-	}
-	
-	public String getContact_numberStr() {
-		return String.valueOf(contact_number);
-	}
-
 	public void setContact_number(String contact_number) {
-		this.contact_number = Long.parseLong(contact_number);
+		this.contact_number = contact_number;
 	}
 
 	public boolean isPersisted() {

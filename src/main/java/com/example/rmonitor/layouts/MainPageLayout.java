@@ -11,6 +11,7 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -22,7 +23,7 @@ public class MainPageLayout extends CssLayout implements View {
 	protected Button delivery_search = new Button("Generate Form");
 	protected DeliveryPrint rental_form;
 	
-	protected TextField client_filter = new TextField();
+	protected NativeSelect<String> client_filter = new NativeSelect<String>();
 	protected Button client_search = new Button("Find Client");
 	protected ClientHistory client_history_view;
 	
@@ -58,7 +59,7 @@ public class MainPageLayout extends CssLayout implements View {
 	
 	protected HorizontalLayout foo = new HorizontalLayout(delivery_filter, delivery_search);
 	protected VerticalLayout bar = new VerticalLayout(
-			new Label("Rental Form - Enter the Rental# you want to generate a form for"), 
+			new Label("Rental Form - Enter the Delivery ID# you want to generate a form for"), 
 			foo);
 	
 	protected HorizontalLayout client_history_search = new HorizontalLayout(client_filter, client_search);

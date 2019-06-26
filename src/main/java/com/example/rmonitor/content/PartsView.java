@@ -95,6 +95,7 @@ implements View {
         this.display_parts.addColumn(Parts::getStatus).setCaption("Status");
         this.display_parts.addColumn(Parts::getRemarks).setCaption("Remarks");
         this.display_parts.addColumn(Parts::getParent).setCaption("Current Unit");
+        this.display_parts.addColumn(Parts::getOriginalParent).setCaption("Belongs to:");
         
         display_parts.setFrozenColumnCount(1);
         this.display_parts.setHeight("500px");
@@ -243,12 +244,33 @@ implements View {
 		});
 		String parameter = String.join("|", foo);
     	
-    	List<Parts> computers = new ArrayList<>();
+    	List<Parts> parts = new ArrayList<>();
         this.manager.connect();
         try {
-            computers = this.constructor.filterParts(this.manager, parameter);
+            parts = this.constructor.filterParts(this.manager, parameter);
             this.manager.disconnect();
-            this.display_parts.setItems(computers);
+            
+            //find current parent and original parent of each part
+            for (Parts x : parts) {
+                if (x.getPartID() > 0) {
+                	String query = String.format("TraceComputer\r\n%s", x.getPartID());
+                    
+                    this.manager.connect();
+                    String parent = this.manager.send(query).trim();
+                    parent = parent.replace(":", "");
+                    this.manager.disconnect();
+                    
+                    x.setParent(parent);
+                    
+                    manager.connect();
+                    parent = constructor.findOriginalComputer(manager, x.getPartID()).getRentalNumber();
+                    manager.disconnect();
+                    
+                    x.setOriginalParent(parent);
+                }
+            }
+            
+            this.display_parts.setItems(parts);
         }
         catch (NumberFormatException ex) {
             this.manager.disconnect();
@@ -273,15 +295,25 @@ implements View {
         parts = this.constructor.constructParts(this.manager, offset, limit);
         this.manager.disconnect();
         
+        //find current parent and original parent of each part
         for (Parts x : parts) {
-            String query = String.format("TraceComputer\r\n%s", x.getPartID());
-            
-            this.manager.connect();
-            String parent = this.manager.send(query).trim();
-            parent = parent.replace(":", "");
-            this.manager.disconnect();
-            
-            x.setParent(parent);
+        	//make sure not to count 1
+            if (x.getPartID() > 1) {
+            	String query = String.format("TraceComputer\r\n%s", x.getPartID());
+                
+                this.manager.connect();
+                String parent = this.manager.send(query).trim();
+                parent = parent.replace(":", "");
+                this.manager.disconnect();
+                
+                x.setParent(parent);
+                
+                manager.connect();
+                parent = constructor.findOriginalComputer(manager, x.getPartID()).getRentalNumber();
+                manager.disconnect();
+                
+                x.setOriginalParent(parent);
+            }
         }
         this.display_parts.setItems(parts);
         display_count.setValue(String.format("%d-%d of %d", offset, offset+limit, count));
@@ -295,6 +327,7 @@ implements View {
         parts = this.constructor.constructParts(this.manager, offset, limit);
         this.manager.disconnect();
         
+      //find current parent and original parent of each part
         for (Parts x : parts) {
             String query = String.format("TraceComputer\r\n%s", x.getPartID());
             
@@ -304,6 +337,12 @@ implements View {
             this.manager.disconnect();
             
             x.setParent(parent);
+            
+            manager.connect();
+            parent = constructor.findOriginalComputer(manager, x.getPartID()).getRentalNumber();
+            manager.disconnect();
+            
+            x.setOriginalParent(parent);
         }
         this.display_parts.setItems(parts);
     }

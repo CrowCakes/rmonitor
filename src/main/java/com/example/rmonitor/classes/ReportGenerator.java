@@ -202,7 +202,10 @@ public class ReportGenerator {
 	    cell = row.createCell(3);
 	    cell.setCellValue("Status");
 	    
-	    for (int i = 0; i<4; i++) {
+	    cell = row.createCell(4);
+	    cell.setCellValue("Remarks");
+	    
+	    for (int i = 0; i<5; i++) {
     		row.getCell(i).setCellStyle(columnStyle);
     	}
 	    sheet.createFreezePane(0, 1);
@@ -226,10 +229,13 @@ public class ReportGenerator {
 	    	cell = row.createCell(3);
 	    	cell.setCellValue(dataRow.getStatus());
 	    	
+	    	cell = row.createCell(4);
+	    	cell.setCellValue(dataRow.getRemarks());
+	    	
 	    	if (i > 0) {
 	    		cellStyle.setBorderTop(BorderStyle.THIN);
 	    	}
-	        for (int j = 0; j<4; j++) {
+	        for (int j = 0; j<5; j++) {
 	        	row.getCell(j).setCellStyle(cellStyle);
 	        }
 	    }
@@ -457,9 +463,9 @@ public class ReportGenerator {
 	    
 	    cell = row.createCell(5);
 	    cell.setCellValue("Is Upgraded?");
-	    
+	        
 	    cell = row.createCell(6);
-	    cell.setCellValue("Part");
+	    cell.setCellValue("# of Releases");
 	    
 	    cell = row.createCell(7);
 	    cell.setCellValue("Part");
@@ -486,12 +492,15 @@ public class ReportGenerator {
 	    cell.setCellValue("Part");
 	    
 	    cell = row.createCell(15);
-	    cell.setCellValue("Status");
+	    cell.setCellValue("Part");
 	    
 	    cell = row.createCell(16);
+	    cell.setCellValue("Status");
+	    
+	    cell = row.createCell(17);
 	    cell.setCellValue("Description");
 	    
-	    for (int i = 0; i<17; i++) {
+	    for (int i = 0; i<18; i++) {
     		row.getCell(i).setCellStyle(columnStyle);
     	}
 	    sheet.createFreezePane(0, 1);
@@ -521,85 +530,90 @@ public class ReportGenerator {
 	    	cell = row.createCell(5);
 	    	cell.setCellValue(dataRow.getIsUpgraded().toString());
 	    	
+	    	cell = row.createCell(6);
 	    	manager.connect();
-	    	Parts temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(0)).get(0);
+	    	cell.setCellValue(constructor.constructRentalUnitHistory(manager, dataRow.getRentalNumber()).size());
 	    	manager.disconnect();
 	    	
-	    	cell = row.createCell(6);
-	    	cell.setCellValue(temp.getStringRepresentation());
-	    	
 	    	manager.connect();
-	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(1)).get(0);
+	    	Parts temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(0)).get(0);
 	    	manager.disconnect();
 	    	
 	    	cell = row.createCell(7);
 	    	cell.setCellValue(temp.getStringRepresentation());
 	    	
 	    	manager.connect();
-	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(2)).get(0);
+	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(1)).get(0);
 	    	manager.disconnect();
 	    	
 	    	cell = row.createCell(8);
 	    	cell.setCellValue(temp.getStringRepresentation());
 	    	
 	    	manager.connect();
-	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(3)).get(0);
+	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(2)).get(0);
 	    	manager.disconnect();
 	    	
 	    	cell = row.createCell(9);
 	    	cell.setCellValue(temp.getStringRepresentation());
 	    	
 	    	manager.connect();
-	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(4)).get(0);
+	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(3)).get(0);
 	    	manager.disconnect();
 	    	
 	    	cell = row.createCell(10);
 	    	cell.setCellValue(temp.getStringRepresentation());
 	    	
 	    	manager.connect();
-	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(5)).get(0);
+	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(4)).get(0);
 	    	manager.disconnect();
 	    	
 	    	cell = row.createCell(11);
 	    	cell.setCellValue(temp.getStringRepresentation());
 	    	
 	    	manager.connect();
-	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(6)).get(0);
+	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(5)).get(0);
 	    	manager.disconnect();
 	    	
 	    	cell = row.createCell(12);
 	    	cell.setCellValue(temp.getStringRepresentation());
 	    	
 	    	manager.connect();
-	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(7)).get(0);
+	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(6)).get(0);
 	    	manager.disconnect();
 	    	
 	    	cell = row.createCell(13);
 	    	cell.setCellValue(temp.getStringRepresentation());
 	    	
 	    	manager.connect();
-	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(8)).get(0);
+	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(7)).get(0);
 	    	manager.disconnect();
 	    	
 	    	cell = row.createCell(14);
 	    	cell.setCellValue(temp.getStringRepresentation());
-
+	    	
+	    	manager.connect();
+	    	temp = constructor.fetchParts(manager, dataRow.getPartIDs().get(8)).get(0);
+	    	manager.disconnect();
+	    	
 	    	cell = row.createCell(15);
-	    	cell.setCellValue(dataRow.getStatus());
+	    	cell.setCellValue(temp.getStringRepresentation());
 
 	    	cell = row.createCell(16);
+	    	cell.setCellValue(dataRow.getStatus());
+
+	    	cell = row.createCell(17);
 	    	cell.setCellValue(dataRow.getDescription());
 	    	
 	    	if (i > 0) {
 	    		cellStyle.setBorderTop(BorderStyle.THIN);
 	    	}
-	        for (int j = 0; j<17; j++) {
+	        for (int j = 0; j<18; j++) {
 	        	row.getCell(j).setCellStyle(cellStyle);
 	        }
 	    }
 	    
 	    //resize the columns
-	    for (int k = 0; k < 17; k ++) {
+	    for (int k = 0; k < 18; k ++) {
 	    	sheet.setColumnWidth(k, ((int)(15 * 1.14388)) * 256);
 	    }
 	    

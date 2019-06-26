@@ -8,12 +8,19 @@ public class PullOutForm {
 	String formNumber;
 	Date dateCreated;
 	String status;
+	String customer;
 	
 	public PullOutForm(int id, String num, Date date, String status) {
 		this.deliveryID = id;
 		this.formNumber = num;
 		this.dateCreated = date;
 		this.status = status;
+		
+		ConnectionManager manager = new ConnectionManager();
+		ObjectConstructor constructor = new ObjectConstructor();
+		manager.connect();
+		this.customer = constructor.findDelivery(manager, String.valueOf(deliveryID)).getcustomerName();
+		manager.disconnect();
 	}
 
 	public int getDeliveryID() {
@@ -54,5 +61,13 @@ public class PullOutForm {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(String customer) {
+		this.customer = customer;
 	}
 }

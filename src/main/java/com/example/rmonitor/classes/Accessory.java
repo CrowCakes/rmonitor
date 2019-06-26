@@ -5,14 +5,23 @@ public class Accessory {
 	String name = "";
 	String accessoryType = "";
 	String status = "";
+	String remarks = "";
 	float price;
 	
-	public Accessory(String rn, String n, String type, String stat, float price) {
+	public Accessory(String rn, String n, String type, String stat, String remarks, float price) {
 		this.rentalNumber = rn;
 		this.name = n;
 		this.accessoryType = type;
-		this.status = stat;
+		this.remarks = remarks;
 		this.price = price;
+		
+		//if defective set unavailable
+		if (this.remarks.toLowerCase().indexOf("DEFECTIVE".toLowerCase()) != -1) {
+			this.status = "Unavailable";
+		}
+		else {
+			this.status = stat;
+		}
 	}
 	
 	public float getPrice() {
@@ -54,6 +63,14 @@ public class Accessory {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 
 	public boolean isPersisted() {

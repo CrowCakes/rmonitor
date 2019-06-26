@@ -97,7 +97,7 @@ extends VerticalLayout {
         Button addAcc = new Button("Create New Accessory");
         addAcc.addClickListener(e -> {
             this.clearSelection();
-            this.acc_form.setAccessory(new Accessory("", "", "", "", 0.0f));
+            this.acc_form.setAccessory(new Accessory("", "", "", "", "n/a", 0.0f));
         });
         
         Button quit = new Button("Kill Server");

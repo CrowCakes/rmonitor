@@ -157,6 +157,7 @@ extends DeliveryFormLayout {
             this.display_computers.setItems(Collections.emptyList());
             this.display_computers.setHeightByRows(1.0);
         }
+        this.number_of_computers.setValue(String.format("Number of Computers: %d", this.computers.size()));
         
         if (this.accessories.size() > 0) {
             this.display_acc.setItems(this.accessories);
@@ -295,8 +296,14 @@ extends DeliveryFormLayout {
      */
     private void cancelComputer() {
         this.available_computers.deselectAll();
+        
         this.comp_buttons.setVisible(true);
+        this.acc_buttons.setVisible(true);
+        this.display_acc.setVisible(true);
+        this.small_acc_buttons.setVisible(true);
+        this.display_small_acc.setVisible(true);
         this.buttons.setVisible(true);
+        
         this.choose_grid.setVisible(false);
         this.showAccSelection(Boolean.valueOf(true));
         this.showSmallAccSelection(Boolean.valueOf(true));
@@ -307,8 +314,14 @@ extends DeliveryFormLayout {
      */
     private void cancelAcc() {
         this.available_acc.deselectAll();
+
+        this.comp_buttons.setVisible(true);
+        this.display_computers.setVisible(true);
         this.acc_buttons.setVisible(true);
+        this.small_acc_buttons.setVisible(true);
+        this.display_small_acc.setVisible(true);
         this.buttons.setVisible(true);
+        
         this.choose_grid.setVisible(false);
         this.showCompSelection(Boolean.valueOf(true));
         this.showSmallAccSelection(Boolean.valueOf(true));
@@ -320,8 +333,14 @@ extends DeliveryFormLayout {
     private void cancelSmallAcc() {
         this.small_accs.setValue(null);
         this.small_acc_amount.setValue("");
+        
+        this.comp_buttons.setVisible(true);
+        this.display_computers.setVisible(true);
+        this.acc_buttons.setVisible(true);
+        this.display_acc.setVisible(true);
         this.small_acc_buttons.setVisible(true);
         this.buttons.setVisible(true);
+        
         this.choose_grid.setVisible(false);
         this.showCompSelection(Boolean.valueOf(true));
         this.showAccSelection(Boolean.valueOf(true));
@@ -494,7 +513,7 @@ extends DeliveryFormLayout {
         try {
             System.out.println("DELETE: ".concat(((SmallAccessory)this.display_small_acc.asSingleSelect().getValue()).getName()));
             for (SmallAccessory i : this.small_accessories) {
-                if (!i.getName().equals(((SmallAccessory)this.small_accs.getValue()).getName())) continue;
+                if (!i.getName().equals(((SmallAccessory)this.display_small_acc.asSingleSelect().getValue()).getName())) continue;
                 this.small_accessories.remove((Object)i);
                 break;
             }
@@ -560,8 +579,13 @@ extends DeliveryFormLayout {
         this.choose_grid.setVisible(true);
         this.showAccSelection(Boolean.valueOf(false));
         this.showSmallAccSelection(Boolean.valueOf(false));
-        this.comp_buttons.setVisible(false);
+        
         this.buttons.setVisible(false);
+        this.acc_buttons.setVisible(false);
+        this.display_acc.setVisible(false);
+        this.small_acc_buttons.setVisible(false);
+        this.display_small_acc.setVisible(false);
+        this.comp_buttons.setVisible(false);
     }
 
     /***
@@ -576,8 +600,13 @@ extends DeliveryFormLayout {
         this.choose_grid.setVisible(true);
         this.showCompSelection(Boolean.valueOf(false));
         this.showSmallAccSelection(Boolean.valueOf(false));
-        this.acc_buttons.setVisible(false);
+        
         this.buttons.setVisible(false);
+        this.acc_buttons.setVisible(false);
+        this.small_acc_buttons.setVisible(false);
+        this.display_small_acc.setVisible(false);
+        this.comp_buttons.setVisible(false);
+        this.display_computers.setVisible(false);
     }
 
     /***
@@ -592,8 +621,13 @@ extends DeliveryFormLayout {
         this.choose_grid.setVisible(true);
         this.showCompSelection(Boolean.valueOf(false));
         this.showAccSelection(Boolean.valueOf(false));
-        this.small_acc_buttons.setVisible(false);
+        
         this.buttons.setVisible(false);
+        this.acc_buttons.setVisible(false);
+        this.display_acc.setVisible(false);
+        this.small_acc_buttons.setVisible(false);
+        this.comp_buttons.setVisible(false);
+        this.display_computers.setVisible(false);
     }
 
     /***
@@ -621,25 +655,10 @@ extends DeliveryFormLayout {
         }
         
         this.manager.connect();
+        //edit the delivery if the deliveryID already exists
         if (this.constructor.isDeliveryExisting(this.manager, this.old_delv_id)) {
             this.manager.disconnect();
             System.out.println("Edit Delivery");
-            
-            /*String base = String.format(
-            		"EditDelivery\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%tF\r\n%tF\r\n%s\r\n%s\r\n%s\r\n%s", 
-            		this.old_delv_id, 
-            		this.delivery.getDeliveryIDStr(), 
-            		this.delivery.getSO(), 
-            		this.delivery.getSI(), 
-            		this.delivery.getARD(), 
-            		this.delivery.getPOS(), 
-            		clientid.trim(), 
-            		this.delivery.getReleaseDate(), 
-            		this.delivery.getDueDate(), 
-            		this.delivery.getAccountManager(), 
-            		this.delivery.getStatus(), 
-            		this.delivery.getExtensionIDStr(), 
-            		this.delivery.getFrequency());*/
             
             List<String> parameters = new ArrayList<>();
             parameters.add(this.old_delv_id);
@@ -662,66 +681,107 @@ extends DeliveryFormLayout {
             String result = this.manager.send(base);
             this.manager.disconnect();
             
+            parameters.clear();
             ArrayList<String> unique_computers = new ArrayList<String>();
             for (int i = 0; i < this.computers.size(); ++i) {
                 if (unique_computers.contains(((Computer)this.computers.get(i)).getRentalNumber())) continue;
                 unique_computers.add(((Computer)this.computers.get(i)).getRentalNumber());
                 
+                parameters.add(this.delivery.getDeliveryIDStr());
+                parameters.add(((Computer)this.computers.get(i)).getRentalNumber());
+                
                 this.manager.connect();
-                result = this.manager.send(String.format(
+                result = this.manager.send(constructor.constructMessage("InsertDeliverySpecs", parameters));
+                /*String.format(
                 		"InsertDeliverySpecs\r\n%s\r\n%s", 
                 		this.delivery.getDeliveryIDStr(), 
-                		((Computer)this.computers.get(i)).getRentalNumber()));
+                		((Computer)this.computers.get(i)).getRentalNumber())*/
                 this.manager.disconnect();
+                
+                if (delivery.getExtensionID() != 0) {
+                	parameters.set(0, delivery.getExtensionIDStr());
+                	
+                	System.out.println("-- EditDelivery --");
+                	System.out.println("The delivery was extended, adding Computers");
+                	System.out.println(parameters);
+                	
+                	manager.connect();
+                	result = this.manager.send(constructor.constructMessage("InsertDeliverySpecs", parameters));
+                    manager.disconnect();
+                }
+                parameters.clear();
             }
             
+            parameters.clear();
             ArrayList<String> unique_acc = new ArrayList<String>();
             for (int i = 0; i < this.accessories.size(); ++i) {
                 if (unique_acc.contains(((Accessory)this.accessories.get(i)).getRentalNumber())) continue;
                 unique_acc.add(((Accessory)this.accessories.get(i)).getRentalNumber());
                 
+                parameters.add(this.delivery.getDeliveryIDStr());
+                parameters.add(((Accessory)this.accessories.get(i)).getRentalNumber());
+                
                 this.manager.connect();
-                result = this.manager.send(String.format(
+                result = this.manager.send(constructor.constructMessage("InsertDeliveryAccessories", parameters));
+                /*String.format(
                 		"InsertDeliveryAccessories\r\n%s\r\n%s", 
                 		this.delivery.getDeliveryIDStr(), 
-                		((Accessory)this.accessories.get(i)).getRentalNumber()));
+                		((Accessory)this.accessories.get(i)).getRentalNumber())*/
                 this.manager.disconnect();
+                
+                if (delivery.getExtensionID() != 0) {
+                	parameters.set(0, delivery.getExtensionIDStr());
+                	
+                	System.out.println("-- EditDelivery --");
+                	System.out.println("The delivery was extended, adding accessories");
+                	System.out.println(parameters);
+                	
+                	manager.connect();
+                	result = this.manager.send(constructor.constructMessage("InsertDeliveryAccessories", parameters));
+                    manager.disconnect();
+                }
+                parameters.clear();
             }
             
+            parameters.clear();
             ArrayList<String> unique_per = new ArrayList<String>();
             for (SmallAccessory i : this.small_accessories) {
                 if (unique_per.contains(i.getName())) continue;
                 unique_per.add(i.getName());
                 
+                parameters.add(this.delivery.getDeliveryIDStr());
+                parameters.add(i.getName());
+                parameters.add(i.getQuantityStr());
+                
                 this.manager.connect();
-                result = this.manager.send(String.format(
+                result = this.manager.send(constructor.constructMessage("InsertDeliveryPeripherals", parameters));
+                /*String.format(
                 		"InsertDeliveryPeripherals\r\n%s\r\n%s\r\n%s", 
                 		this.delivery.getDeliveryIDStr(), 
                 		i.getName(), 
-                		i.getQuantity()));
+                		i.getQuantity())*/
                 this.manager.disconnect();
+                
+                if (delivery.getExtensionID() != 0) {
+                	parameters.set(0, delivery.getExtensionIDStr());
+                	
+                	System.out.println("-- EditDelivery --");
+                	System.out.println("The delivery was extended, adding peripherals");
+                	System.out.println(parameters);
+                	
+                	manager.connect();
+                	result = this.manager.send(constructor.constructMessage("InsertDeliveryPeripherals", parameters));
+                    manager.disconnect();
+                }
+                parameters.clear();
             }
             
             Notification.show((String)"Edit Delivery", (String)result, (Notification.Type)Notification.Type.HUMANIZED_MESSAGE);
-        } 
+        }
+        //if the deliveryID does not exist, create a new Delivery
         else {
             this.manager.disconnect();
             System.out.println("Create New Delivery");
-            
-            /*String base = String.format(
-            		"InsertNewDelivery\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%s\r\n%tF\r\n%tF\r\n%s\r\n%s\r\n%s\r\n%s", 
-            		this.delivery.getDeliveryIDStr(), 
-            		this.delivery.getSO(), 
-            		this.delivery.getSI(), 
-            		this.delivery.getARD(), 
-            		this.delivery.getPOS(), 
-            		clientid.trim(), 
-            		this.delivery.getReleaseDate(), 
-            		this.delivery.getDueDate(), 
-            		this.delivery.getAccountManager(), 
-            		this.delivery.getStatus(), 
-            		this.delivery.getExtensionIDStr(), 
-            		this.delivery.getFrequency());*/
             
             List<String> parameters = new ArrayList<>();
             parameters.add(this.delivery.getDeliveryIDStr());
@@ -757,44 +817,94 @@ extends DeliveryFormLayout {
             }
             
             //insert the units
+            parameters.clear();
             ArrayList<String> unique_computers = new ArrayList<String>();
             for (int i = 0; i < this.computers.size(); ++i) {
                 if (unique_computers.contains(((Computer)this.computers.get(i)).getRentalNumber())) continue;
                 unique_computers.add(((Computer)this.computers.get(i)).getRentalNumber());
                 
+                /*
                 this.manager.connect();
                 result = this.manager.send(String.format(
                 		"InsertDeliverySpecs\r\n%s\r\n%s", 
                 		last_insert_id, 
                 		((Computer)this.computers.get(i)).getRentalNumber()));
+                this.manager.disconnect();*/
+                
+                parameters.add(String.valueOf(last_insert_id));
+                parameters.add(((Computer)this.computers.get(i)).getRentalNumber());
+                
+                this.manager.connect();
+                result = this.manager.send(constructor.constructMessage("InsertDeliverySpecs", parameters));
                 this.manager.disconnect();
+                
+                if (delivery.getExtensionID() != 0) {
+                	parameters.set(0, delivery.getExtensionIDStr());
+                	manager.connect();
+                	result = this.manager.send(constructor.constructMessage("InsertDeliverySpecs", parameters));
+                    manager.disconnect();
+                }
+                parameters.clear();
             }
             
+            parameters.clear();
             ArrayList<String> unique_acc = new ArrayList<String>();
             for (int i = 0; i < this.accessories.size(); ++i) {
                 if (unique_acc.contains(((Accessory)this.accessories.get(i)).getRentalNumber())) continue;
                 unique_acc.add(((Accessory)this.accessories.get(i)).getRentalNumber());
                 
-                this.manager.connect();
+                /*this.manager.connect();
                 result = this.manager.send(String.format(
                 		"InsertDeliveryAccessories\r\n%s\r\n%s", 
                 		last_insert_id, 
                 		((Accessory)this.accessories.get(i)).getRentalNumber()));
+                this.manager.disconnect();*/
+                
+                parameters.add(String.valueOf(last_insert_id));
+                parameters.add(((Accessory)this.accessories.get(i)).getRentalNumber());
+                
+                this.manager.connect();
+                result = this.manager.send(constructor.constructMessage("InsertDeliveryAccessories", parameters));
                 this.manager.disconnect();
+                
+                if (delivery.getExtensionID() != 0) {
+                	parameters.set(0, delivery.getExtensionIDStr());
+                	manager.connect();
+                	result = this.manager.send(constructor.constructMessage("InsertDeliveryAccessories", parameters));
+                    manager.disconnect();
+                }
+                parameters.clear();
             }
             
+            parameters.clear();
             ArrayList<String> unique_per = new ArrayList<String>();
             for (SmallAccessory i : this.small_accessories) {
                 if (unique_per.contains(i.getName())) continue;
                 unique_per.add(i.getName());
                 
-                this.manager.connect();
+                /*this.manager.connect();
                 result = this.manager.send(String.format(
                 		"InsertDeliveryPeripherals\r\n%s\r\n%s\r\n%s", 
                 		last_insert_id, 
                 		i.getName(), 
                 		i.getQuantity()));
+                this.manager.disconnect();*/
+                
+                parameters.add(String.valueOf(last_insert_id));
+                parameters.add(i.getName());
+                parameters.add(i.getQuantityStr());
+                
+                this.manager.connect();
+                result = this.manager.send(constructor.constructMessage("InsertDeliveryPeripherals", parameters));
                 this.manager.disconnect();
+                
+                if (delivery.getExtensionID() != 0) {
+                	parameters.set(0, delivery.getExtensionIDStr());
+                	manager.connect();
+                	result = this.manager.send(constructor.constructMessage("InsertDeliveryPeripherals", parameters));
+                    manager.disconnect();
+                }
+                parameters.clear();
             }
             
             Notification.show((String)"Create New Delivery", (String)result, (Notification.Type)Notification.Type.HUMANIZED_MESSAGE);
@@ -829,6 +939,7 @@ extends DeliveryFormLayout {
         } else {
             this.display_computers.setHeightByRows(1.0);
         }
+        this.number_of_computers.setValue(String.format("Number of Computers: %d", foo));
         this.display_computers.setItems(foo);
     }
 

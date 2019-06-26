@@ -427,7 +427,12 @@ public class ObjectConstructor {
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
-			parsed_data.add(new Accessory(foobar.get(2), foobar.get(0), foobar.get(1), foobar.get(3),
+			parsed_data.add(new Accessory(
+					foobar.get(2), 
+					foobar.get(0), 
+					foobar.get(1), 
+					foobar.get(3),
+					foobar.get(5),
 					Float.parseFloat(foobar.get(4))
 					)
 					);
@@ -457,8 +462,14 @@ public class ObjectConstructor {
 			if (foobar.size() == 1) {
 				return new ArrayList<>();
 			}
-			parsed_data.add(new Accessory(foobar.get(2), foobar.get(0), foobar.get(1), foobar.get(3),
-					Float.parseFloat(foobar.get(4))
+			parsed_data.add(
+					new Accessory(
+							foobar.get(2), 
+							foobar.get(0), 
+							foobar.get(1), 
+							foobar.get(3),
+							foobar.get(5),
+							Float.parseFloat(foobar.get(4))
 					)
 					);
 		}
@@ -1709,7 +1720,7 @@ public class ObjectConstructor {
 					foobar.get(1),
 					foobar.get(2),
 					foobar.get(3),
-					Long.parseLong(foobar.get(4))
+					foobar.get(4)
 					));
 		}
 		
@@ -1744,7 +1755,7 @@ public class ObjectConstructor {
 					foobar.get(1),
 					foobar.get(2),
 					foobar.get(3),
-					Long.parseLong(foobar.get(4))
+					foobar.get(4)
 					));
 		}
 		
@@ -1777,7 +1788,7 @@ public class ObjectConstructor {
 					foobar.get(1),
 					foobar.get(2),
 					foobar.get(3),
-					Long.parseLong(foobar.get(4))
+					foobar.get(4)
 					));
 		
 		}
@@ -1787,7 +1798,7 @@ public class ObjectConstructor {
 				return parsed_data.get(i);
 			}
 		}
-		return (new Client(0, "", "", "", 0));
+		return (new Client(0, "", "", "", ""));
 	}
 	
 	/**
@@ -2013,6 +2024,22 @@ public class ObjectConstructor {
 		String foo = new String(manager.send("FindOnHandComputers"));
 		
 		parsed_data = parseComputerNoParts(foo);
+		return parsed_data;
+	}
+	
+	/**
+	 * Finds the Computer to which the input partID originally belonged
+	 * @param manager
+	 * @param x
+	 * @return
+	 */
+	public Computer findOriginalComputer(ConnectionManager manager, int partID) {
+		Computer parsed_data = new Computer("", "", "", "", null, false, null, "", "", 0f);
+		
+		//query the information from database
+		String foo = new String(manager.send(String.format("FindOriginalComputer\r\n%d", partID)));
+		
+		parsed_data = parseComputerNoParts(foo).get(0);
 		return parsed_data;
 	}
 	

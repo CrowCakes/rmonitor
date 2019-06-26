@@ -70,6 +70,11 @@ extends MainPageLayout {
         });
         this.client_history_search.setSizeUndefined();
         this.client_history_layout.setSizeUndefined();
+        
+        manager.connect();
+        client_filter.setItems(constructor.constructClientNames(manager));
+        manager.disconnect();
+        
         panel.setContent((Component)this.client_history_layout);
         panel.setSizeUndefined();
         return panel;

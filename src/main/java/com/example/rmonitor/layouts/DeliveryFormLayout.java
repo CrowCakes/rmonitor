@@ -50,6 +50,7 @@ public class DeliveryFormLayout extends HorizontalLayout {
 	protected Button delete = new Button("Return Delivery");
 	protected Button extend = new Button("Extend");
 	
+	protected Label number_of_computers = new Label("");
 	protected Grid<Computer> display_computers = new Grid<>();
 	protected Grid<Computer> available_computers = new Grid<>();
 	
@@ -78,7 +79,7 @@ public class DeliveryFormLayout extends HorizontalLayout {
 	
 	protected HorizontalLayout buttons = new HorizontalLayout(save, cancel);
 	
-	protected VerticalLayout main_grid = new VerticalLayout(display_computers, comp_buttons, 
+	protected VerticalLayout main_grid = new VerticalLayout(number_of_computers, display_computers, comp_buttons, 
 			display_acc, acc_buttons, 
 			display_small_acc, small_acc_buttons);
 	protected VerticalLayout choose_grid = new VerticalLayout(

@@ -11,6 +11,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -33,6 +34,8 @@ extends FormLayout {
     private TextField name;
     private TextField parttype;
     private TextArea remarks;
+    private Label parent;
+    
     private Button save;
     private Button delete;
     private Button cancel;
@@ -55,7 +58,7 @@ extends FormLayout {
         this.parts_view = parts_view;
         this.prepare_fields();
         this.partid.setEnabled(false);
-        this.addComponents(new Component[]{this.partid, this.name, this.parttype, this.remarks, this.save_cancel});
+        this.addComponents(this.partid, this.name, this.parttype, this.remarks, this.parent, this.save_cancel);
         this.setVisible(false);
         this.save.setStyleName("primary");
         this.save.setClickShortcut(13, new int[0]);
@@ -79,7 +82,7 @@ extends FormLayout {
         TextField price = new TextField("Price");
         this.binder.bind(price, Parts::getPriceStr, Parts::setPrice);
         this.prepare_fields();
-        this.addComponents(new Component[]{this.partid, this.name, this.parttype, price, this.remarks, this.save_cancel});
+        this.addComponents(this.partid, this.name, this.parttype, price, this.remarks, this.save_cancel);
         this.setVisible(false);
         this.save.setStyleName("primary");
         this.save.setClickShortcut(13, new int[0]);
@@ -133,7 +136,13 @@ extends FormLayout {
         this.parts = parts;
         this.old_part = String.valueOf(parts.getPartID());
         this.binder.setBean(parts);
+        this.parent.setValue(
+        		String.format("Currently attached to Rental# %s, originally attached to Rental# %s", 
+        				parts.getParent(), parts.getOriginalParent())
+        		);
+        
         this.delete.setVisible(parts.isPersisted());
+        
         this.setVisible(true);
     }
 
@@ -146,7 +155,7 @@ extends FormLayout {
         this.manager.disconnect();
         
         String desc = this.parts.getRemarks().replace("\n", "").replace("\r", "").isEmpty() ? 
-        		"None" : 
+        		"n/a" : 
         			this.parts.getRemarks().replace("\n", "").replace("\r", "");
         
         if (Integer.parseInt(this.old_part) == this.parts.getPartID() || 

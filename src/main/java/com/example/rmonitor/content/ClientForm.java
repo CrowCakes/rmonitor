@@ -97,7 +97,7 @@ extends ClientFormLayout {
         this.binder.bind(this.name, Client::getName, Client::setName);
         this.binder.bind(this.address, Client::getAddress, Client::setAddress);
         this.binder.bind(this.contactperson, Client::getContact_person, Client::setContact_person);
-        this.binder.bind(this.contactnum, Client::getContact_numberStr, Client::setContact_number);
+        this.binder.bind(this.contactnum, Client::getContact_number, Client::setContact_number);
         this.name.setRequiredIndicatorVisible(true);
         this.address.setRequiredIndicatorVisible(true);
         this.contactnum.setRequiredIndicatorVisible(true);
@@ -145,7 +145,7 @@ extends ClientFormLayout {
             parameters.add(this.client.getName());
             parameters.add(this.client.getAddress());
             parameters.add(this.client.getContact_person());
-            parameters.add(this.client.getContact_numberStr());
+            parameters.add(this.client.getContact_number());
             
             String query = constructor.constructMessage("EditClient", parameters);
             
@@ -168,7 +168,7 @@ extends ClientFormLayout {
             parameters.add(this.client.getName());
             parameters.add(this.client.getAddress());
             parameters.add(this.client.getContact_person());
-            parameters.add(this.client.getContact_numberStr());
+            parameters.add(this.client.getContact_number());
             
             String query = constructor.constructMessage("InsertNewClient", parameters);
             

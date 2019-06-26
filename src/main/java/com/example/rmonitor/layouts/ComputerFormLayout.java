@@ -20,6 +20,7 @@ public class ComputerFormLayout extends HorizontalLayout {
 	protected TextArea description = new TextArea("Description");
 	protected TextField price = new TextField("Price");
 	protected TextField status = new TextField("Status");
+	protected Label history_count = new Label("");
 	protected Label parent_delivery = new Label();
 	
 	protected Grid<Parts> display_computers_parts = new Grid<>();

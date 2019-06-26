@@ -86,6 +86,7 @@ implements View {
         this.display_accessories.addColumn(Accessory::getName).setCaption("Name");
         this.display_accessories.addColumn(Accessory::getAccessoryType).setCaption("Type");
         this.display_accessories.addColumn(Accessory::getStatus).setCaption("Status");
+        this.display_accessories.addColumn(Accessory::getRemarks).setCaption("Remarks");
         this.display_accessories.setHeight("500px");
         this.display_accessories.setWidth("600px");
         if (user.equals("Admin")) {
@@ -142,7 +143,7 @@ implements View {
         Button addAcc = new Button("Create New Accessory");
         addAcc.addClickListener(e -> {
             this.clearSelection();
-            this.acc_form.setAccessory(new Accessory("", "", "", "", 0.0f));
+            this.acc_form.setAccessory(new Accessory("", "", "", "", "n/a", 0.0f));
         });
         if (!user.equals("Admin")) {
             addAcc.setEnabled(false);

@@ -6,7 +6,8 @@ public class Parts {
 	String partType;
 	String status;
 	float price;
-	String parent;
+	String parent = "";
+	String originalParent = "";
 	String remarks;
 	
 	public String getParent() {
@@ -17,13 +18,29 @@ public class Parts {
 		this.parent = parent;
 	}
 
+	public String getOriginalParent() {
+		return originalParent;
+	}
+
+	public void setOriginalParent(String originalParent) {
+		this.originalParent = originalParent;
+	}
+
 	public Parts(int pid, String n, String pt, String s, String remarks, float price) {
 		this.partID = pid;
 		this.name = n;
 		this.partType = pt;
-		this.status = s;
+		//this.status = s;
 		this.remarks = remarks;
 		this.price = price;
+		
+		//if defective set unavailable
+		if (this.remarks.toLowerCase().indexOf("DEFECTIVE".toLowerCase()) != -1) {
+			this.status = "Unavailable";
+		}
+		else {
+			this.status = s;
+		}
 	}
 	
 	public int getPartID() {

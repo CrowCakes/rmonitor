@@ -46,6 +46,7 @@ implements View {
 
     private void prepare_grid() {
         this.pullouts.addColumn(PullOutForm::getDeliveryID).setCaption("DeliveryID");
+        this.pullouts.addColumn(PullOutForm::getCustomer).setCaption("Customer");
         this.pullouts.addColumn(PullOutForm::getFormNumber).setCaption("Form Number");
         this.pullouts.addColumn(PullOutForm::getDateCreated).setCaption("Date Created");
         this.pullouts.addColumn(PullOutForm::getStatus).setCaption("Status");

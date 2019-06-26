@@ -81,6 +81,7 @@ implements View {
         HorizontalLayout grid_row = new HorizontalLayout();
         this.display_deliveries = new Grid<>();
         this.display_deliveries.addColumn(Delivery::getDeliveryID).setCaption("DelvID");
+        this.display_deliveries.addColumn(Delivery::getSO).setCaption("SO#");
         this.display_deliveries.addColumn(Delivery::getcustomerName).setCaption("Client");
         this.display_deliveries.addColumn(Delivery::getReleaseDate).setCaption("Released");
         this.display_deliveries.addColumn(Delivery::getDueDate).setCaption("Due");

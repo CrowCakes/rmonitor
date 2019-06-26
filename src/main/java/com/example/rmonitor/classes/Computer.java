@@ -16,6 +16,7 @@ public class Computer {
 	String status = "On Hand";
 	String description = "";
 	float price;
+	int history_count;
 	
 	public Computer(String rn, 
 			String c, 
@@ -29,9 +30,17 @@ public class Computer {
 		this.purchaseDate = pur;
 		this.isUpgraded = is;
 		this.partIDs = parts;
-		this.status = status;
+		//this.status = status;
 		this.description = desc;
 		this.price = price;
+		
+		//if defective set unavailable
+		if (this.description.toLowerCase().indexOf("DEFECTIVE".toLowerCase()) != -1) {
+			this.status = "Unavailable";
+		}
+		else {
+			this.status = status;
+		}
 	}
 	
 	public String getRentalNumber() {
@@ -121,5 +130,13 @@ public class Computer {
 
 	public void setPrice(String price) {
 		this.price = Float.parseFloat(price);
+	}
+
+	public int getHistory_count() {
+		return history_count;
+	}
+
+	public void setHistory_count(int history_count) {
+		this.history_count = history_count;
 	}
 }
