@@ -315,6 +315,7 @@ extends DeliveryFormLayout {
     private void cancelAcc() {
         this.available_acc.deselectAll();
 
+        this.number_of_computers.setVisible(true);
         this.comp_buttons.setVisible(true);
         this.display_computers.setVisible(true);
         this.acc_buttons.setVisible(true);
@@ -334,6 +335,7 @@ extends DeliveryFormLayout {
         this.small_accs.setValue(null);
         this.small_acc_amount.setValue("");
         
+        this.number_of_computers.setVisible(true);
         this.comp_buttons.setVisible(true);
         this.display_computers.setVisible(true);
         this.acc_buttons.setVisible(true);
@@ -382,6 +384,12 @@ extends DeliveryFormLayout {
         this.available_computers.deselectAll();
         this.comp_buttons.setVisible(true);
         this.buttons.setVisible(true);
+        
+        this.acc_buttons.setVisible(true);
+        this.display_acc.setVisible(true);
+        this.small_acc_buttons.setVisible(true);
+        this.display_small_acc.setVisible(true);
+        
         this.choose_grid.setVisible(false);
         this.showAccSelection(Boolean.valueOf(true));
         this.showSmallAccSelection(Boolean.valueOf(true));
@@ -422,6 +430,13 @@ extends DeliveryFormLayout {
         this.available_acc.deselectAll();
         this.acc_buttons.setVisible(true);
         this.buttons.setVisible(true);
+        
+        this.number_of_computers.setVisible(true);
+        this.comp_buttons.setVisible(true);
+        this.display_computers.setVisible(true);
+        this.small_acc_buttons.setVisible(true);
+        this.display_small_acc.setVisible(true);
+        
         this.choose_grid.setVisible(false);
         this.showCompSelection(Boolean.valueOf(true));
         this.showSmallAccSelection(Boolean.valueOf(true));
@@ -459,6 +474,13 @@ extends DeliveryFormLayout {
         this.small_acc_amount.setValue("");
         this.small_acc_buttons.setVisible(true);
         this.buttons.setVisible(true);
+        
+        this.number_of_computers.setVisible(true);
+        this.comp_buttons.setVisible(true);
+        this.display_computers.setVisible(true);
+        this.acc_buttons.setVisible(true);
+        this.display_acc.setVisible(true);
+        
         this.choose_grid.setVisible(false);
         this.showCompSelection(Boolean.valueOf(true));
         this.showAccSelection(Boolean.valueOf(true));
@@ -607,6 +629,7 @@ extends DeliveryFormLayout {
         this.display_small_acc.setVisible(false);
         this.comp_buttons.setVisible(false);
         this.display_computers.setVisible(false);
+        this.number_of_computers.setVisible(false);
     }
 
     /***
@@ -628,6 +651,7 @@ extends DeliveryFormLayout {
         this.small_acc_buttons.setVisible(false);
         this.comp_buttons.setVisible(false);
         this.display_computers.setVisible(false);
+        this.number_of_computers.setVisible(false);
     }
 
     /***
@@ -939,7 +963,7 @@ extends DeliveryFormLayout {
         } else {
             this.display_computers.setHeightByRows(1.0);
         }
-        this.number_of_computers.setValue(String.format("Number of Computers: %d", foo));
+        this.number_of_computers.setValue(String.format("Number of Computers: %d", foo.size()));
         this.display_computers.setItems(foo);
     }
 

@@ -87,6 +87,7 @@ implements View {
         this.display_accessories.addColumn(Accessory::getAccessoryType).setCaption("Type");
         this.display_accessories.addColumn(Accessory::getStatus).setCaption("Status");
         this.display_accessories.addColumn(Accessory::getRemarks).setCaption("Remarks");
+
         this.display_accessories.setHeight("500px");
         this.display_accessories.setWidth("600px");
         if (user.equals("Admin")) {

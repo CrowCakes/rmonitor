@@ -35,6 +35,7 @@ extends FormLayout {
     private TextField parttype;
     private TextArea remarks;
     private Label parent;
+    private Label orig;
     
     private Button save;
     private Button delete;
@@ -49,6 +50,9 @@ extends FormLayout {
         this.name = new TextField("Name");
         this.parttype = new TextField("Type");
         remarks = new TextArea("Remarks");
+        parent = new Label("");
+        orig = new Label("");
+        
         this.save = new Button("Save");
         this.delete = new Button("Delete");
         this.cancel = new Button("Cancel");
@@ -58,7 +62,9 @@ extends FormLayout {
         this.parts_view = parts_view;
         this.prepare_fields();
         this.partid.setEnabled(false);
-        this.addComponents(this.partid, this.name, this.parttype, this.remarks, this.parent, this.save_cancel);
+        this.addComponents(
+        		this.partid, this.name, this.parttype, this.remarks, this.parent, this.orig, 
+        		this.save_cancel);
         this.setVisible(false);
         this.save.setStyleName("primary");
         this.save.setClickShortcut(13, new int[0]);
@@ -137,9 +143,10 @@ extends FormLayout {
         this.old_part = String.valueOf(parts.getPartID());
         this.binder.setBean(parts);
         this.parent.setValue(
-        		String.format("Currently attached to Rental# %s, originally attached to Rental# %s", 
-        				parts.getParent(), parts.getOriginalParent())
+        		String.format("Currently attached to %s", 
+        				parts.getParent())
         		);
+        this.orig.setValue(String.format("Originally from %s", parts.getOriginalParent()));
         
         this.delete.setVisible(parts.isPersisted());
         

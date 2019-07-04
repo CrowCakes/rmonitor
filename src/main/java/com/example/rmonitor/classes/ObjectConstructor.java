@@ -1960,7 +1960,7 @@ public class ObjectConstructor {
 		List<Parts> parsed_data = new ArrayList<>();
 		
 		String query = new String();
-		query = String.format("ViewOriginalParts\r\n%s", rentalNumber);
+		query = String.format("ViewOriginalSpecs\r\n%s", rentalNumber);
 		
 		//query the information from database
 		String foo = new String(manager.send(query));
@@ -2039,7 +2039,15 @@ public class ObjectConstructor {
 		//query the information from database
 		String foo = new String(manager.send(String.format("FindOriginalComputer\r\n%d", partID)));
 		
-		parsed_data = parseComputerNoParts(foo).get(0);
+		try {
+			parsed_data = parseComputerNoParts(foo).get(0);
+		}
+		catch (IndexOutOfBoundsException ex) {
+			System.out.println("-- findOriginalComputer -- error");
+			System.out.println(String.format("Input: %s", partID));
+			System.out.println(String.format("Response: %s", foo));
+			parsed_data = new Computer("error", "", "", "", null, null, null, foo, foo, partID);
+		}
 		return parsed_data;
 	}
 	

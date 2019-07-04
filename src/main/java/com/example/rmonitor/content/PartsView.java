@@ -95,7 +95,10 @@ implements View {
         this.display_parts.addColumn(Parts::getStatus).setCaption("Status");
         this.display_parts.addColumn(Parts::getRemarks).setCaption("Remarks");
         this.display_parts.addColumn(Parts::getParent).setCaption("Current Unit");
-        this.display_parts.addColumn(Parts::getOriginalParent).setCaption("Belongs to:");
+        this.display_parts.addColumn(Parts::getOriginalParent).setId("Original");
+        
+        this.display_parts.getColumn("Original").setWidth(150);
+        display_parts.getColumn("Original").setCaption("Belongs to:");
         
         display_parts.setFrozenColumnCount(1);
         this.display_parts.setHeight("500px");

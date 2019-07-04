@@ -20,6 +20,7 @@ import com.vaadin.ui.VerticalLayout;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DeliveriesView
@@ -210,15 +211,24 @@ implements View {
      * Fetches the latest list of Deliveries from the database based on the filter input.
      */
     private void updateList() {
-        List<Delivery> parts = new ArrayList<>();
+    	//List<String> filter_value = Arrays.asList(filter.getValue().split("\\s*/\\s*"));
+		//filter_value.replaceAll(string -> {
+		//	String temp = String.format(".*%s.*", string);
+		//	return temp;
+		//});
+		//String parameter = String.join("|", filter_value);
+    	
+        List<Delivery> deliveries = new ArrayList<>();
         this.manager.connect();
-        parts = DeliveriesView.isInteger((String)this.filter.getValue()) ? 
+        deliveries = DeliveriesView.isInteger((String)this.filter.getValue()) ? 
         		this.constructor.constructDeliveries(this.manager, Integer.parseInt(this.filter.getValue())) : 
-        			this.constructor.constructDeliveries(this.manager, this.filter.getValue());
+        			this.constructor.constructDeliveries(this.manager, this.filter.getValue());		
+        //deliveries = constructor.constructDeliveries(manager, parameter);
+        
         this.manager.disconnect();
         
         // get the total price of the Delivery order
-        for (Delivery x : parts) {
+        for (Delivery x : deliveries) {
             List<Computer> foo = new ArrayList<>();
             List<Accessory> bar = new ArrayList<>();
             float comp_total = 0.0f;
@@ -242,7 +252,7 @@ implements View {
             x.setNumberOfUnits(foo.size());
         }
         
-        this.display_deliveries.setItems(parts);
+        this.display_deliveries.setItems(deliveries);
     }
 
     /***
