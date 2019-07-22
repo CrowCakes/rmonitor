@@ -104,7 +104,7 @@ implements View {
         Button addclient = new Button("Add New Client");
         addclient.addClickListener((Button.ClickListener & java.io.Serializable)e -> {
             this.clearSelection();
-            this.client_form.setClient(new Client(0, "", "", "", ""));
+            this.client_form.setClient(new Client(0, "", "", "", "0"));
         });
         if (!user.equals("Admin")) {
             addclient.setEnabled(false);
