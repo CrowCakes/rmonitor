@@ -129,6 +129,11 @@ extends ClientFormLayout {
      * Sends field input to the database. An entry is created or edited based on the field input.
      */
     private void save() {
+    	String contactNumber = this.client.getContact_number();
+    	if (contactNumber.isEmpty()) {
+    		contactNumber = "0";
+    	}
+    	
         this.manager.connect();
         if (this.constructor.isClientExisting(this.manager, this.old_client.getName())) {
             this.manager.disconnect();
@@ -145,7 +150,7 @@ extends ClientFormLayout {
             parameters.add(this.client.getName());
             parameters.add(this.client.getAddress());
             parameters.add(this.client.getContact_person());
-            parameters.add(this.client.getContact_number());
+            parameters.add(contactNumber);
             
             String query = constructor.constructMessage("EditClient", parameters);
             
@@ -168,7 +173,7 @@ extends ClientFormLayout {
             parameters.add(this.client.getName());
             parameters.add(this.client.getAddress());
             parameters.add(this.client.getContact_person());
-            parameters.add(this.client.getContact_number());
+            parameters.add(contactNumber);
             
             String query = constructor.constructMessage("InsertNewClient", parameters);
             
