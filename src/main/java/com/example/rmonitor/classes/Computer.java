@@ -38,6 +38,9 @@ public class Computer {
 		if (this.description.toLowerCase().indexOf("DEFECTIVE".toLowerCase()) != -1) {
 			this.status = "Unavailable";
 		}
+		else if (this.description.toLowerCase().indexOf("DONATE".toLowerCase()) != -1) {
+			this.status = "Unavailable";
+		}
 		else {
 			this.status = status;
 		}
