@@ -20,7 +20,6 @@ import com.vaadin.ui.VerticalLayout;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DeliveriesView

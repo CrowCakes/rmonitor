@@ -1,6 +1,5 @@
 package com.example.rmonitor.content;
 
-import com.example.rmonitor.classes.Accessory;
 import com.example.rmonitor.classes.Computer;
 import com.example.rmonitor.classes.ConnectionManager;
 import com.example.rmonitor.classes.ObjectConstructor;
@@ -9,7 +8,6 @@ import com.example.rmonitor.classes.ReportGenerator;
 import com.example.rmonitor.content.ComputerForm;
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.ValueChangeMode;
-import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -21,17 +19,12 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.joda.time.DateTime;
-import org.vaadin.viritin.button.DownloadButton;
 
 public class ComputerView
 extends CssLayout
